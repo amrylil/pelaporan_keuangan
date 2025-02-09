@@ -7,7 +7,6 @@ import (
 type Placeholder struct {
 	gorm.Model
 
-	ID int `gorm:"type:int(11)"`
+	ID   uint   `gorm:"primaryKey"`
 	Name string `gorm:"type:varchar(255)"`
 }
-

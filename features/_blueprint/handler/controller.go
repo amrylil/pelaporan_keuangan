@@ -58,7 +58,7 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 }
 
 func (ctl *controller) PlaceholderDetails(c *gin.Context) {
-	placeholderID, err := strconv.Atoi(c.Param("id"))
+	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
@@ -117,9 +117,9 @@ func (ctl *controller) CreatePlaceholder(c *gin.Context) {
 
 func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 	var input dtos.InputPlaceholder
-	placeholderID, errParam := strconv.Atoi(c.Param("id"))
+	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 
-	if errParam != nil {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(errParam.Error()))
 		return
 	}
@@ -165,7 +165,7 @@ func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 }
 
 func (ctl *controller) DeletePlaceholder(c *gin.Context) {
-	placeholderID, err := strconv.Atoi(c.Param("id"))
+	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
