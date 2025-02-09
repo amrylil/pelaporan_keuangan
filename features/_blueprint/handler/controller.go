@@ -49,9 +49,12 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, helpers.BuildErrorResponse("Success!", gin.H{
-		"data": placeholders,
-	}))
+	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{
+		Status:     "true",
+		Message:    "Get All Placeholders Success",
+		Data:       placeholders,
+		Pagination: pagination,
+	})
 }
 
 func (ctl *controller) PlaceholderDetails(c *gin.Context) {
@@ -73,9 +76,11 @@ func (ctl *controller) PlaceholderDetails(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, helpers.BuildErrorResponse("Success!", gin.H{
-		"data": placeholder,
-	}))
+	c.JSON(http.StatusOK, helpers.ResponseGetDetailSuccess{
+		Data:    placeholder,
+		Status:  "true",
+		Message: " Get Placeholder Detail Success",
+	})
 }
 
 func (ctl *controller) CreatePlaceholder(c *gin.Context) {
@@ -104,9 +109,10 @@ func (ctl *controller) CreatePlaceholder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, helpers.BuildErrorResponse("Success!", gin.H{
-		"data": "succes",
-	}))
+	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
+		Message: " Create Placeholder Success",
+		Status:  "true",
+	})
 }
 
 func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
@@ -152,7 +158,10 @@ func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, helpers.BuildErrorResponse("Placeholder Successfully Updated!"))
+	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
+		Message: " Update Placeholder Success",
+		Status:  "true",
+	})
 }
 
 func (ctl *controller) DeletePlaceholder(c *gin.Context) {
@@ -182,5 +191,8 @@ func (ctl *controller) DeletePlaceholder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, helpers.BuildErrorResponse("Placeholder Successfully Deleted!"))
+	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
+		Message: " Delete Placeholder Success",
+		Status:  "true",
+	})
 }
