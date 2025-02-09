@@ -3,6 +3,7 @@ package usecase
 import (
 	"blueprint_golang/features/_blueprint"
 	"blueprint_golang/features/_blueprint/dtos"
+	"blueprint_golang/helpers"
 
 	"github.com/labstack/gommon/log"
 	"github.com/mashingan/smapping"
@@ -70,6 +71,7 @@ func (svc *service) Create(newPlaceholder dtos.InputPlaceholder) error {
 		return nil
 	}
 
+	placeholder.ID = helpers.GenerateID()
 	err = svc.model.Insert(placeholder)
 
 	if err != nil {
