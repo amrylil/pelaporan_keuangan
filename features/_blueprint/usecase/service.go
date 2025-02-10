@@ -19,13 +19,13 @@ func New(model _blueprint.Repository) _blueprint.Usecase {
 	}
 }
 
-func (svc *service) FindAll(page, size int) ([]dtos.ResPlaceholder, error) {
+func (svc *service) FindAll(page, size int) ([]dtos.ResPlaceholder, int64, error) {
 	var placeholders []dtos.ResPlaceholder
 
-	placeholdersEnt, err := svc.model.Paginate(page, size)
+	placeholdersEnt, total, err := svc.model.GetAll(page, size)
 	if err != nil {
 		log.Error(err.Error())
-		return nil, err
+		return nil, 0, err
 	}
 
 	for _, placeholder := range placeholdersEnt {
@@ -33,12 +33,13 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResPlaceholder, error) {
 
 		if err := smapping.FillStruct(&data, smapping.MapFields(placeholder)); err != nil {
 			log.Error(err.Error())
+			return nil, 0, err
 		}
 
 		placeholders = append(placeholders, data)
 	}
 
-	return placeholders, nil
+	return placeholders, total, nil
 }
 
 func (svc *service) FindByID(placeholderID uint) (*dtos.ResPlaceholder, error) {

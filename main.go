@@ -1,12 +1,19 @@
 package main
 
 import (
-	"blueprint_golang/utils"
+	"blueprint_golang/config"
 	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	r := gin.Default()
+	cfg := config.InitConfig()
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, "hello!😍")
+	})
 
-	utils.InitDB()
+	r.Run(fmt.Sprintf(":%s", cfg.SERVER_PORT))
 }

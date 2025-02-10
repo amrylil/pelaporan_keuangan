@@ -17,8 +17,15 @@ func New(db *gorm.DB) _blueprint.Repository {
 	}
 }
 
-func (mdl *model) Paginate(page, size int) ([]_blueprint.Placeholder, error) {
+func (mdl *model) GetAll(page, size int) ([]_blueprint.Placeholder, int64, error) {
 	var placeholders []_blueprint.Placeholder
+	var total int64
+
+	if err := mdl.db.Model(&placeholders).
+		Where("soft_delete = ?", 0).
+		Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
 
 	offset := (page - 1) * size
 
@@ -26,10 +33,10 @@ func (mdl *model) Paginate(page, size int) ([]_blueprint.Placeholder, error) {
 
 	if err != nil {
 		log.Error(err)
-		return nil, err
+		return nil, 0, err
 	}
 
-	return placeholders, nil
+	return placeholders, total, nil
 }
 
 func (mdl *model) Insert(newPlaceholder _blueprint.Placeholder) error {

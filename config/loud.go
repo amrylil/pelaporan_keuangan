@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 type DatabaseConfig struct {
@@ -13,6 +14,24 @@ type DatabaseConfig struct {
 	DB_HOST string
 	DB_PORT string
 	DB_NAME string
+}
+
+func InitConfig() *ProgramConfig {
+	godotenv.Load()
+
+	var res = new(ProgramConfig)
+	res = loadConfig()
+
+	if res == nil {
+		logrus.Fatal("Config : Cannot start program, failed to load configuration")
+		return nil
+	}
+
+	return res
+}
+
+type ProgramConfig struct {
+	SERVER_PORT string
 }
 
 func LoadDBConfig() *DatabaseConfig {
@@ -45,5 +64,14 @@ func LoadDBConfig() *DatabaseConfig {
 		res.DB_NAME = val
 	}
 
+	return res
+}
+
+func loadConfig() *ProgramConfig {
+	var res = new(ProgramConfig)
+
+	if val, found := os.LookupEnv("SERVER_PORT"); found {
+		res.SERVER_PORT = val
+	}
 	return res
 }

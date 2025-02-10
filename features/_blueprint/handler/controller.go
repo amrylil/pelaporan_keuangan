@@ -37,7 +37,7 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 	page := pagination.Page
 	pageSize := pagination.Size
 
-	placeholders, err := ctl.service.FindAll(page, pageSize)
+	placeholders, total, err := ctl.service.FindAll(page, pageSize)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -49,11 +49,13 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 		return
 	}
 
+	paginationData := helpers.PaginationResponse(page, pageSize, int(total))
+
 	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{
 		Status:     "true",
 		Message:    "Get All Placeholders Success",
 		Data:       placeholders,
-		Pagination: pagination,
+		Pagination: paginationData,
 	})
 }
 

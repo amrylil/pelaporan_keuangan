@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	Paginate(page, size int) ([]Placeholder, error)
+	GetAll(page, size int) ([]Placeholder, int64, error)
 	Insert(newPlaceholder Placeholder) error
 	SelectByID(placeholderID uint) (*Placeholder, error)
 	Update(placeholder Placeholder) error
@@ -15,7 +15,7 @@ type Repository interface {
 }
 
 type Usecase interface {
-	FindAll(page, size int) ([]dtos.ResPlaceholder, error)
+	FindAll(page, size int) ([]dtos.ResPlaceholder, int64, error)
 	FindByID(placeholderID uint) (*dtos.ResPlaceholder, error)
 	Create(newPlaceholder dtos.InputPlaceholder) error
 	Modify(placeholderData dtos.InputPlaceholder, placeholderID uint) error
