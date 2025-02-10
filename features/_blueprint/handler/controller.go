@@ -52,7 +52,7 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 	paginationData := helpers.PaginationResponse(page, pageSize, int(total))
 
 	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{
-		Status:     "true",
+		Status:     true,
 		Message:    "Get All Placeholders Success",
 		Data:       placeholders,
 		Pagination: paginationData,
@@ -67,7 +67,7 @@ func (ctl *controller) PlaceholderDetails(c *gin.Context) {
 		return
 	}
 
-	placeholder, err := ctl.service.FindByID(placeholderID)
+	placeholder, err := ctl.service.FindByID(uint(placeholderID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -80,7 +80,7 @@ func (ctl *controller) PlaceholderDetails(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseGetDetailSuccess{
 		Data:    placeholder,
-		Status:  "true",
+		Status:  true,
 		Message: " Get Placeholder Detail Success",
 	})
 }
@@ -113,20 +113,19 @@ func (ctl *controller) CreatePlaceholder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
 		Message: " Create Placeholder Success",
-		Status:  "true",
+		Status:  true,
 	})
 }
 
 func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 	var input dtos.InputPlaceholder
 	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 32)
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(errParam.Error()))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	placeholder, err := ctl.service.FindByID(placeholderID)
+	placeholder, err := ctl.service.FindByID(uint(placeholderID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -153,7 +152,7 @@ func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Modify(input, placeholderID)
+	err = ctl.service.Modify(input, uint(placeholderID))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -162,7 +161,7 @@ func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
 		Message: " Update Placeholder Success",
-		Status:  "true",
+		Status:  true,
 	})
 }
 
@@ -174,7 +173,7 @@ func (ctl *controller) DeletePlaceholder(c *gin.Context) {
 		return
 	}
 
-	placeholder, err := ctl.service.FindByID(placeholderID)
+	placeholder, err := ctl.service.FindByID(uint(placeholderID))
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -186,7 +185,7 @@ func (ctl *controller) DeletePlaceholder(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(placeholderID)
+	err = ctl.service.Remove(uint(placeholderID))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -195,6 +194,6 @@ func (ctl *controller) DeletePlaceholder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
 		Message: " Delete Placeholder Success",
-		Status:  "true",
+		Status:  true,
 	})
 }
