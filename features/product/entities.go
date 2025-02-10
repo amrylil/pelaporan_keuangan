@@ -1,16 +1,15 @@
-package _blueprint
+package product
 
 import (
 	"gorm.io/gorm"
 )
 
-type Placeholder struct {
+type Product struct {
 	gorm.Model
-
 	ID   uint   `gorm:"primaryKey"`
 	Name string `gorm:"type:varchar(255)"`
 }
 
-func (Placeholder) TableName() string {
-	return "placeholder"
+func (Product) TableName() string {
+	return "products"
 }

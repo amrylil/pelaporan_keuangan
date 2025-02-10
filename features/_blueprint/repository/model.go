@@ -22,7 +22,6 @@ func (mdl *model) GetAll(page, size int) ([]_blueprint.Placeholder, int64, error
 	var total int64
 
 	if err := mdl.db.Model(&placeholders).
-		Where("soft_delete = ?", 0).
 		Count(&total).Error; err != nil {
 		return nil, 0, err
 	}

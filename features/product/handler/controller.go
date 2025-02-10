@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"blueprint_golang/features/_blueprint"
-	"blueprint_golang/features/_blueprint/dtos"
+	"blueprint_golang/features/product"
+	"blueprint_golang/features/product/dtos"
 	"blueprint_golang/helpers"
 	"net/http"
 	"strconv"
@@ -12,10 +12,10 @@ import (
 )
 
 type controller struct {
-	service _blueprint.Usecase
+	service product.Usecase
 }
 
-func New(service _blueprint.Usecase) _blueprint.Handler {
+func New(service product.Usecase) product.Handler {
 	return &controller{
 		service: service,
 	}
@@ -23,7 +23,7 @@ func New(service _blueprint.Usecase) _blueprint.Handler {
 
 var validate *validator.Validate
 
-func (ctl *controller) GetPlaceholders(c *gin.Context) {
+func (ctl *controller) GetProducts(c *gin.Context) {
 	var pagination dtos.Pagination
 	if err := c.ShouldBindJSON(&pagination); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))
@@ -37,15 +37,15 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 	page := pagination.Page
 	pageSize := pagination.Size
 
-	placeholders, total, err := ctl.service.FindAll(page, pageSize)
+	products, total, err := ctl.service.FindAll(page, pageSize)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	if placeholders == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is No Placeholders!"))
+	if products == nil {
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is No Products!"))
 		return
 	}
 
@@ -53,40 +53,40 @@ func (ctl *controller) GetPlaceholders(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{
 		Status:     true,
-		Message:    "Get All Placeholders Success",
-		Data:       placeholders,
+		Message:    "Get All Products Success",
+		Data:       products,
 		Pagination: paginationData,
 	})
 }
 
-func (ctl *controller) PlaceholderDetails(c *gin.Context) {
-	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+func (ctl *controller) ProductDetails(c *gin.Context) {
+	productID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	placeholder, err := ctl.service.FindByID(uint(placeholderID))
+	product, err := ctl.service.FindByID(uint(productID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	if placeholder == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Placeholder Not Found!"))
+	if product == nil {
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Product Not Found!"))
 		return
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseGetDetailSuccess{
-		Data:    placeholder,
+		Data:    product,
 		Status:  true,
-		Message: " Get Placeholder Detail Success",
+		Message: " Get Product Detail Success",
 	})
 }
 
-func (ctl *controller) CreatePlaceholder(c *gin.Context) {
-	var input dtos.InputPlaceholder
+func (ctl *controller) CreateProduct(c *gin.Context) {
+	var input dtos.InputProduct
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request!"))
@@ -112,27 +112,27 @@ func (ctl *controller) CreatePlaceholder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Create Placeholder Success",
+		Message: " Create Product Success",
 		Status:  true,
 	})
 }
 
-func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
-	var input dtos.InputPlaceholder
-	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+func (ctl *controller) UpdateProduct(c *gin.Context) {
+	var input dtos.InputProduct
+	productID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	placeholder, err := ctl.service.FindByID(uint(placeholderID))
+	product, err := ctl.service.FindByID(uint(productID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	if placeholder == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Placeholder Not Found!"))
+	if product == nil {
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Product Not Found!"))
 		return
 	}
 
@@ -152,7 +152,7 @@ func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Modify(input, uint(placeholderID))
+	err = ctl.service.Modify(input, uint(productID))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -160,32 +160,32 @@ func (ctl *controller) UpdatePlaceholder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Update Placeholder Success",
+		Message: " Update Product Success",
 		Status:  true,
 	})
 }
 
-func (ctl *controller) DeletePlaceholder(c *gin.Context) {
-	placeholderID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+func (ctl *controller) DeleteProduct(c *gin.Context) {
+	productID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	placeholder, err := ctl.service.FindByID(uint(placeholderID))
+	product, err := ctl.service.FindByID(uint(productID))
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	if placeholder == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Placeholder Not Found!"))
+	if product == nil {
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Product Not Found!"))
 		return
 	}
 
-	err = ctl.service.Remove(uint(placeholderID))
+	err = ctl.service.Remove(uint(productID))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -193,7 +193,7 @@ func (ctl *controller) DeletePlaceholder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Delete Placeholder Success",
+		Message: " Delete Product Success",
 		Status:  true,
 	})
 }
