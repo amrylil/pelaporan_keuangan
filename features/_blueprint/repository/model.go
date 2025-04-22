@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"blueprint_golang/features/_blueprint"
+	"pelaporan_keuangan/features/_blueprint"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"

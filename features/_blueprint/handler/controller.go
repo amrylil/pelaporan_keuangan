@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"blueprint_golang/features/_blueprint"
-	"blueprint_golang/features/_blueprint/dtos"
-	"blueprint_golang/helpers"
 	"net/http"
+	"pelaporan_keuangan/features/_blueprint"
+	"pelaporan_keuangan/features/_blueprint/dtos"
+	"pelaporan_keuangan/helpers"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +23,7 @@ func New(service _blueprint.Usecase) _blueprint.Handler {
 
 var validate *validator.Validate
 
-func (ctl *controller) GetPlaceholders(c *gin.Context) {
+func (ctl *controller) GetPlaceholder(c *gin.Context) {
 	var pagination dtos.Pagination
 	if err := c.ShouldBindJSON(&pagination); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))

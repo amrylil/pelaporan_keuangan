@@ -1,7 +1,7 @@
 package _blueprint
 
 import (
-	"blueprint_golang/features/_blueprint/dtos"
+	"pelaporan_keuangan/features/_blueprint/dtos"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ type Usecase interface {
 }
 
 type Handler interface {
-	GetPlaceholders(c *gin.Context)
+	GetPlaceholder(c *gin.Context)
 	PlaceholderDetails(c *gin.Context)
 	CreatePlaceholder(c *gin.Context)
 	UpdatePlaceholder(c *gin.Context)

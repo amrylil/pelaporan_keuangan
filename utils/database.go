@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"blueprint_golang/config"
 	"fmt"
 	"log"
+	"pelaporan_keuangan/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

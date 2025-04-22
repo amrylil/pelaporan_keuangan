@@ -1,15 +1,15 @@
 package main
 
 import (
-	"blueprint_golang/config"
-	"blueprint_golang/features/product"
-	"blueprint_golang/features/product/handler"
-	"blueprint_golang/features/product/repository"
-	"blueprint_golang/features/product/usecase"
-	"blueprint_golang/routes"
-	"blueprint_golang/utils"
 	"fmt"
 	"net/http"
+	"pelaporan_keuangan/config"
+	"pelaporan_keuangan/features/users"
+	"pelaporan_keuangan/features/users/handler"
+	"pelaporan_keuangan/features/users/repository"
+	"pelaporan_keuangan/features/users/usecase"
+	"pelaporan_keuangan/routes"
+	"pelaporan_keuangan/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,13 +21,13 @@ func main() {
 		ctx.String(http.StatusOK, "hello!😍")
 	})
 
-	routes.Products(r, ProductHandler())
+	routes.Users(r, UsersHandler())
 	r.Run(fmt.Sprintf(":%s", cfg.SERVER_PORT))
 }
 
-func ProductHandler() product.Handler {
+func UsersHandler() users.Handler {
 	db := utils.InitDB()
-	db.AutoMigrate(product.Product{})
+	db.AutoMigrate(users.Users{})
 
 	repo := repository.New(db)
 	usecase := usecase.New(repo)
