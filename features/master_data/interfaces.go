@@ -7,25 +7,61 @@ import (
 )
 
 type Repository interface {
-	GetAll(page, size int) ([]Master_data, int64, error)
-	Insert(newMaster_data Master_data) error
-	SelectByID(master_dataID uint) (*Master_data, error)
-	Update(master_data Master_data) error
-	DeleteByID(master_dataID uint) error
+	GetAllJenisPembayaran(page, size int) ([]JenisPembayaran, int64, error)
+	InsertJenisPembayaran(newJenisPembayaran JenisPembayaran) error
+	SelectJenisPembayaranByID(jenisPembayaranID uint) (*JenisPembayaran, error)
+	UpdateJenisPembayaran(jenisPembayaran JenisPembayaran) error
+	DeleteJenisPembayaranByID(jenisPembayaranID uint) error
+
+	GetAllTipeTransaksi(page, size int) ([]TipeTransaksi, int64, error)
+	InsertTipeTransaksi(newTipeTransaksi TipeTransaksi) error
+	SelectTipeTransaksiByID(tipeTransaksiID uint) (*TipeTransaksi, error)
+	UpdateTipeTransaksi(tipeTransaksi TipeTransaksi) error
+	DeleteTipeTransaksiByID(tipeTransaksi uint) error
+
+	GetAllStatusTransaksi(page, size int) ([]StatusTransaksi, int64, error)
+	InsertStatusTransaksi(newStatusTransaksi StatusTransaksi) error
+	SelectStatusTransaksiByID(statusTransaksiID uint) (*StatusTransaksi, error)
+	UpdateStatusTransaksi(statusTransaksi StatusTransaksi) error
+	DeleteStatusTransaksiByID(statusTransaksi uint) error
 }
 
 type Usecase interface {
-	FindAll(page, size int) ([]dtos.ResMaster_data, int64, error)
-	FindByID(master_dataID uint) (*dtos.ResMaster_data, error)
-	Create(newMaster_data dtos.InputMaster_data) error
-	Modify(master_dataData dtos.InputMaster_data, master_dataID uint) error
-	Remove(master_dataID uint) error
+	FindAllTipeTransaksi(page, size int) ([]dtos.ResTipeTransaksi, int64, error)
+	FindTipeTransaksiByID(tipeTransaksiID uint) (*dtos.ResTipeTransaksi, error)
+	CreateTipeTransaksi(newTipeTransaksi dtos.InputTipeTransaksi) error
+	ModifyTipeTransaksi(tipeTransaksiData dtos.InputTipeTransaksi, TipeTransaksiID uint) error
+	RemoveTipeTransaksi(TipeTransaksiID uint) error
+
+	FindAllJenisPembayaran(page, size int) ([]dtos.ResJenisPembayaran, int64, error)
+	FindJenisPembayaranByID(jenisPembayaranID uint) (*dtos.ResJenisPembayaran, error)
+	CreateJenisPembayaran(newJenisPembayaran dtos.InputJenisPembayaran) error
+	ModifyJenisPembayaran(jenisPembayaranData dtos.InputJenisPembayaran, JenisPembayaranID uint) error
+	RemoveJenisPembayaran(JenisPembayaranID uint) error
+
+	FindAllStatusTransaksi(page, size int) ([]dtos.ResStatusTransaksi, int64, error)
+	FindStatusTransaksiByID(statusTransaksiID uint) (*dtos.ResStatusTransaksi, error)
+	CreateStatusTransaksi(newStatusTransaksi dtos.InputStatusTransaksi) error
+	ModifyStatusTransaksi(statusTransaksiData dtos.InputStatusTransaksi, StatusTransaksiID uint) error
+	RemoveStatusTransaksi(statusTransaksiID uint) error
 }
 
 type Handler interface {
-	GetMaster_data(c *gin.Context)
-	Master_dataDetails(c *gin.Context)
-	CreateMaster_data(c *gin.Context)
-	UpdateMaster_data(c *gin.Context)
-	DeleteMaster_data(c *gin.Context)
+	GetJenisPembayaran(c *gin.Context)
+	JenisPembayaranDetails(c *gin.Context)
+	CreateJenisPembayaran(c *gin.Context)
+	UpdateJenisPembayaran(c *gin.Context)
+	DeleteJenisPembayaran(c *gin.Context)
+
+	GetTipeTransaksi(c *gin.Context)
+	TipeTransaksiDetails(c *gin.Context)
+	CreateTipeTransaksi(c *gin.Context)
+	UpdateTipeTransaksi(c *gin.Context)
+	DeleteTipeTransaksi(c *gin.Context)
+
+	GetStatusTransaksi(c *gin.Context)
+	StatusTransaksiDetails(c *gin.Context)
+	CreateStatusTransaksi(c *gin.Context)
+	UpdateStatusTransaksi(c *gin.Context)
+	DeleteStatusTransaksi(c *gin.Context)
 }
