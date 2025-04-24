@@ -12,7 +12,7 @@ import (
 
 func (ctl *controller) GetJenisPembayaran(c *gin.Context) {
 	var pagination dtos.Pagination
-	if err := c.ShouldBindJSON(&pagination); err != nil {
+	if err := c.ShouldBindQuery(&pagination); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))
 		return
 	}

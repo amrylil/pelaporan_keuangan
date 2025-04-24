@@ -12,9 +12,9 @@ import (
 	"pelaporan_keuangan/routes"
 	"pelaporan_keuangan/utils"
 
-	mh "pelaporan_keuangan/features/users/handler"
-	mr "pelaporan_keuangan/features/users/repository"
-	mu "pelaporan_keuangan/features/users/usecase"
+	mh "pelaporan_keuangan/features/master_data/handler"
+	mr "pelaporan_keuangan/features/master_data/repository"
+	mu "pelaporan_keuangan/features/master_data/usecase"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,6 +27,7 @@ func main() {
 	})
 
 	routes.Users(r, UsersHandler())
+	routes.Master_data(r, MasterDataHandler())
 	r.Run(fmt.Sprintf(":%s", cfg.SERVER_PORT))
 }
 
@@ -39,7 +40,7 @@ func UsersHandler() users.Handler {
 	return handler.New(usecase)
 }
 
-func MasterDataHandler() users.Handler {
+func MasterDataHandler() master_data.Handler {
 	db := utils.InitDB()
 	db.AutoMigrate(master_data.JenisPembayaran{})
 	db.AutoMigrate(master_data.StatusTransaksi{})

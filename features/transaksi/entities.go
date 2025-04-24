@@ -1,6 +1,10 @@
 package transaksi
 
 import (
+	"pelaporan_keuangan/features/kategori"
+	"pelaporan_keuangan/features/master_data"
+	"pelaporan_keuangan/features/users"
+
 	"gorm.io/gorm"
 )
 
@@ -19,11 +23,11 @@ type Transaksi struct {
 	IDJenisPembayaran uint    `gorm:"column:id_jenis_pembayaran"`
 
 	// Relasi opsional
-	// TipeTransaksi   TipeTransaksi   `gorm:"foreignKey:IDTipeTransaksi"`
-	// StatusTransaksi StatusTransaksi `gorm:"foreignKey:IDStatusTransaksi"`
-	// Kategori        Kategori        `gorm:"foreignKey:IDKategori"`
-	// User            User            `gorm:"foreignKey:IDUser"`
-	// JenisPembayaran JenisPembayaran `gorm:"foreignKey:IDJenisPembayaran"`
+	TipeTransaksi   master_data.TipeTransaksi   `gorm:"foreignKey:IDTipeTransaksi"`
+	StatusTransaksi master_data.StatusTransaksi `gorm:"foreignKey:IDStatusTransaksi"`
+	Kategori        kategori.Kategori           `gorm:"foreignKey:IDKategori"`
+	User            users.Users                 `gorm:"foreignKey:IDUser"`
+	JenisPembayaran master_data.JenisPembayaran `gorm:"foreignKey:IDJenisPembayaran"`
 }
 
 func (Transaksi) TableName() string {
