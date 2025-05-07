@@ -32,4 +32,5 @@ type Transaksi struct {
 
 func (Transaksi) TableName() string {
 	return "transaksi"
+
 }
