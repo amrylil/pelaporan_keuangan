@@ -11,7 +11,10 @@ type Repository interface {
 	Insert(newTransaksi Transaksi) error
 	SelectByID(transaksiID uint) (*Transaksi, error)
 	Update(transaksi Transaksi) error
+	UpdatePartial(transaksiID uint, updates map[string]interface{}) error // NEW
 	DeleteByID(transaksiID uint) error
+	UpdateStatus(transaksiID uint, statusID int) error
+	GetWithFilter(filter dtos.TransaksiListRequest) ([]Transaksi, int64, error) // NEW
 }
 
 type Usecase interface {
@@ -19,7 +22,10 @@ type Usecase interface {
 	FindByID(transaksiID uint) (*dtos.ResTransaksi, error)
 	Create(newTransaksi dtos.InputTransaksi) error
 	Modify(transaksiData dtos.InputTransaksi, transaksiID uint) error
+	ModifyPartial(updateData dtos.UpdateTransaksiRequest) error // NEW
 	Remove(transaksiID uint) error
+	ModifyStatus(transaksiID uint, statusID int) error
+	FindWithFilter(filter dtos.TransaksiListRequest) ([]dtos.ResTransaksi, int64, error) // NEW
 }
 
 type Handler interface {

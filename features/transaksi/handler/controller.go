@@ -25,7 +25,7 @@ var validate *validator.Validate
 
 func (ctl *controller) GetTransaksi(c *gin.Context) {
 	var pagination dtos.Pagination
-	if err := c.ShouldBindJSON(&pagination); err != nil {
+	if err := c.ShouldBindQuery(&pagination); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))
 		return
 	}
@@ -118,49 +118,52 @@ func (ctl *controller) CreateTransaksi(c *gin.Context) {
 }
 
 func (ctl *controller) UpdateTransaksi(c *gin.Context) {
-	var input dtos.InputTransaksi
 	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid transaction ID"))
 		return
 	}
 
-	transaksi, err := ctl.service.FindByID(uint(transaksiID))
+	// Check if transaction exists
+	existingTransaksi, err := ctl.service.FindByID(uint(transaksiID))
 	if err != nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
+		return
+	}
+	if existingTransaksi == nil {
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaction not found"))
 		return
 	}
 
-	if transaksi == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaksi Not Found!"))
+	// Use UpdateTransaksiRequest for partial updates
+	var input dtos.UpdateTransaksiRequest
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request data"))
 		return
 	}
 
-	if err = c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request!"))
-		return
-	}
+	// Set the ID for update
+	id := uint(transaksiID)
+	input.ID = &id
 
-	validate = validator.New()
-	err = validate.Struct(input)
-
-	if err != nil {
+	// Validate the input
+	if err := validate.Struct(input); err != nil {
 		errMap := helpers.ErrorMapValidation(err)
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Bad Request!", gin.H{
-			"error": errMap,
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Validation failed", gin.H{
+			"errors": errMap,
 		}))
 		return
 	}
 
-	err = ctl.service.Modify(input, uint(transaksiID))
-
+	// Call service with proper update DTO
+	err = ctl.service.ModifyPartial(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Update Transaksi Success",
+		Message: "Update Transaction Success",
 		Status:  true,
 	})
 }
@@ -194,6 +197,39 @@ func (ctl *controller) DeleteTransaksi(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
 		Message: " Delete Transaksi Success",
+		Status:  true,
+	})
+}
+
+func (ctl *controller) UpdateTransaksiStatus(c *gin.Context) {
+	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid transaction ID"))
+		return
+	}
+
+	var input struct {
+		StatusID uint `json:"status_id" validate:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request data"))
+		return
+	}
+
+	if err := validate.Struct(input); err != nil {
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Status ID is required"))
+		return
+	}
+
+	err = ctl.service.ModifyStatus(uint(transaksiID), int(input.StatusID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
+		Message: "Update Transaction Status Success",
 		Status:  true,
 	})
 }

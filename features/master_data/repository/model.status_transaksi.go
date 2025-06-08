@@ -6,29 +6,29 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func (mdl *model) GetAllStatusTransaksi(page, size int) ([]master_data.StatusTransaksi, int64, error) {
-	var status_transaksi []master_data.StatusTransaksi
+func (mdl *model) GetAllTipeTransaksi(page, size int) ([]master_data.TipeTransaksi, int64, error) {
+	var tipe_transaksi []master_data.TipeTransaksi
 	var total int64
 
-	if err := mdl.db.Model(&status_transaksi).
+	if err := mdl.db.Model(&tipe_transaksi).
 		Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	offset := (page - 1) * size
 
-	err := mdl.db.Offset(offset).Limit(size).Find(&status_transaksi).Error
+	err := mdl.db.Offset(offset).Limit(size).Find(&tipe_transaksi).Error
 
 	if err != nil {
 		log.Error(err)
 		return nil, 0, err
 	}
 
-	return status_transaksi, total, nil
+	return tipe_transaksi, total, nil
 }
 
-func (mdl *model) InsertStatusTransaksi(newStatusTransaksi master_data.StatusTransaksi) error {
-	err := mdl.db.Create(&newStatusTransaksi).Error
+func (mdl *model) InsertTipeTransaksi(newTipeTransaksi master_data.TipeTransaksi) error {
+	err := mdl.db.Create(&newTipeTransaksi).Error
 
 	if err != nil {
 		log.Error(err)
@@ -38,20 +38,20 @@ func (mdl *model) InsertStatusTransaksi(newStatusTransaksi master_data.StatusTra
 	return nil
 }
 
-func (mdl *model) SelectStatusTransaksiByID(statusTransaksiID uint) (*master_data.StatusTransaksi, error) {
-	var status_transaksi master_data.StatusTransaksi
-	err := mdl.db.First(&status_transaksi, statusTransaksiID).Error
+func (mdl *model) SelectTipeTransaksiByID(tipeTransaksiID uint) (*master_data.TipeTransaksi, error) {
+	var tipe_transaksi master_data.TipeTransaksi
+	err := mdl.db.First(&tipe_transaksi, tipeTransaksiID).Error
 
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
-	return &status_transaksi, nil
+	return &tipe_transaksi, nil
 }
 
-func (mdl *model) UpdateStatusTransaksi(status_transaksi master_data.StatusTransaksi) error {
-	err := mdl.db.Updates(&status_transaksi).Error
+func (mdl *model) UpdateTipeTransaksi(tipe_transaksi master_data.TipeTransaksi) error {
+	err := mdl.db.Updates(&tipe_transaksi).Error
 
 	if err != nil {
 		log.Error(err)
@@ -60,8 +60,8 @@ func (mdl *model) UpdateStatusTransaksi(status_transaksi master_data.StatusTrans
 	return err
 }
 
-func (mdl *model) DeleteStatusTransaksiByID(statusTransaksiID uint) error {
-	err := mdl.db.Delete(&master_data.StatusTransaksi{}, statusTransaksiID).Error
+func (mdl *model) DeleteTipeTransaksiByID(tipeTransaksiID uint) error {
+	err := mdl.db.Delete(&master_data.TipeTransaksi{}, tipeTransaksiID).Error
 
 	if err != nil {
 		log.Error(err)
