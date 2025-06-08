@@ -10,6 +10,18 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// GetTipeTransaksi godoc
+// @Summary Get all tipe transaksi with pagination
+// @Description Retrieve all tipe transaksi data with pagination support
+// @Tags MasterData-TipeTransaksi
+// @Accept json
+// @Produce json
+// @Param pagination body dtos.Pagination true "Pagination parameters"
+// @Success 200 {object} helpers.ResponseGetAllSuccess{data=[]dtos.ResTipeTransaksi,pagination=helpers.Pagination} "Success get all tipe transaksi"
+// @Failure 400 {object} helpers.ResponseError "Invalid pagination data"
+// @Failure 404 {object} helpers.ResponseError "No tipe transaksi found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /tipe-transaksi [post]
 func (ctl *controller) GetTipeTransaksi(c *gin.Context) {
 	var pagination dtos.Pagination
 	if err := c.ShouldBindJSON(&pagination); err != nil {
@@ -45,6 +57,18 @@ func (ctl *controller) GetTipeTransaksi(c *gin.Context) {
 	})
 }
 
+// TipeTransaksiDetails godoc
+// @Summary Get tipe transaksi by ID
+// @Description Retrieve detailed information of a specific tipe transaksi by ID
+// @Tags MasterData-TipeTransaksi
+// @Accept json
+// @Produce json
+// @Param id path int true "Tipe Transaksi ID"
+// @Success 200 {object} helpers.ResponseGetDetailSuccess{data=dtos.ResTipeTransaksi} "Success get tipe transaksi detail"
+// @Failure 400 {object} helpers.ResponseError "Invalid ID parameter"
+// @Failure 404 {object} helpers.ResponseError "Tipe transaksi not found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /tipe-transaksi/{id} [get]
 func (ctl *controller) TipeTransaksiDetails(c *gin.Context) {
 	tipeTransaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -70,6 +94,17 @@ func (ctl *controller) TipeTransaksiDetails(c *gin.Context) {
 	})
 }
 
+// CreateTipeTransaksi godoc
+// @Summary Create new tipe transaksi
+// @Description Create a new tipe transaksi with the provided data
+// @Tags MasterData-TipeTransaksi
+// @Accept json
+// @Produce json
+// @Param input body dtos.InputTipeTransaksi true "Tipe transaksi input data"
+// @Success 200 {object} helpers.ResponseCUDSuccess "Success create tipe transaksi"
+// @Failure 400 {object} helpers.ResponseError "Invalid request data or validation error"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /tipe-transaksi [post]
 func (ctl *controller) CreateTipeTransaksi(c *gin.Context) {
 	var input dtos.InputTipeTransaksi
 
@@ -100,6 +135,19 @@ func (ctl *controller) CreateTipeTransaksi(c *gin.Context) {
 	})
 }
 
+// UpdateTipeTransaksi godoc
+// @Summary Update existing tipe transaksi
+// @Description Update an existing tipe transaksi with the provided data
+// @Tags MasterData-TipeTransaksi
+// @Accept json
+// @Produce json
+// @Param id path int true "Tipe Transaksi ID"
+// @Param input body dtos.InputTipeTransaksi true "Tipe transaksi update data"
+// @Success 200 {object} helpers.ResponseCUDSuccess "Success update tipe transaksi"
+// @Failure 400 {object} helpers.ResponseError "Invalid request data or validation error"
+// @Failure 404 {object} helpers.ResponseError "Tipe transaksi not found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /tipe-transaksi/{id} [put]
 func (ctl *controller) UpdateTipeTransaksi(c *gin.Context) {
 	var input dtos.InputTipeTransaksi
 	tipeTransaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
@@ -146,6 +194,18 @@ func (ctl *controller) UpdateTipeTransaksi(c *gin.Context) {
 	})
 }
 
+// DeleteTipeTransaksi godoc
+// @Summary Delete tipe transaksi
+// @Description Delete an existing tipe transaksi by ID
+// @Tags MasterData-TipeTransaksi
+// @Accept json
+// @Produce json
+// @Param id path int true "Tipe Transaksi ID"
+// @Success 200 {object} helpers.ResponseCUDSuccess "Success delete tipe transaksi"
+// @Failure 400 {object} helpers.ResponseError "Invalid ID parameter"
+// @Failure 404 {object} helpers.ResponseError "Tipe transaksi not found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /tipe-transaksi/{id} [delete]
 func (ctl *controller) DeleteTipeTransaksi(c *gin.Context) {
 	tipeTransaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

@@ -1,0 +1,1379 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API untuk sistem pelaporan keuangan dengan manajemen users, transaksi, dan master data",
+        "title": "Pelaporan Keuangan API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/jenis-pembayaran": {
+            "get": {
+                "description": "Get all payment types with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-JenisPembayaran"
+                ],
+                "summary": "Get all payment types",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all payment types success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseGetAllSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dtos.ResJenisPembayaran"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "$ref": "#/definitions/helpers.Pagination"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid pagination data",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "No payment types found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new payment type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-JenisPembayaran"
+                ],
+                "summary": "Create new payment type",
+                "parameters": [
+                    {
+                        "description": "Payment type data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputJenisPembayaran"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Create payment type success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid input data or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/jenis-pembayaran/{id}": {
+            "get": {
+                "description": "Get payment type details by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-JenisPembayaran"
+                ],
+                "summary": "Get payment type details",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Payment Type ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get payment type detail success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseGetDetailSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dtos.ResJenisPembayaran"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid payment type ID",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Payment type not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing payment type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-JenisPembayaran"
+                ],
+                "summary": "Update payment type",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Payment Type ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update payment type data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputJenisPembayaran"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update payment type success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid payment type ID or request data",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Payment type not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific payment type by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-JenisPembayaran"
+                ],
+                "summary": "Delete payment type",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Payment Type ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete payment type success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid payment type ID",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Payment type not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/status-transaksi": {
+            "post": {
+                "description": "Create a new status transaksi with the provided data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-StatusTransaksi"
+                ],
+                "summary": "Create new status transaksi",
+                "parameters": [
+                    {
+                        "description": "Status transaksi input data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputStatusTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success create status transaksi",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/status-transaksi/{id}": {
+            "get": {
+                "description": "Retrieve detailed information of a specific status transaksi by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-StatusTransaksi"
+                ],
+                "summary": "Get status transaksi by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Status Transaksi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get status transaksi detail",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseGetDetailSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dtos.ResStatusTransaksi"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID parameter",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Status transaksi not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing status transaksi with the provided data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-StatusTransaksi"
+                ],
+                "summary": "Update existing status transaksi",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Status Transaksi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Status transaksi update data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputStatusTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success update status transaksi",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Status transaksi not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing status transaksi by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-StatusTransaksi"
+                ],
+                "summary": "Delete status transaksi",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Status Transaksi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete status transaksi",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID parameter",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Status transaksi not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/tipe-transaksi": {
+            "post": {
+                "description": "Create a new tipe transaksi with the provided data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-TipeTransaksi"
+                ],
+                "summary": "Create new tipe transaksi",
+                "parameters": [
+                    {
+                        "description": "Tipe transaksi input data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputTipeTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success create tipe transaksi",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/tipe-transaksi/{id}": {
+            "get": {
+                "description": "Retrieve detailed information of a specific tipe transaksi by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-TipeTransaksi"
+                ],
+                "summary": "Get tipe transaksi by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tipe Transaksi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get tipe transaksi detail",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseGetDetailSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dtos.ResTipeTransaksi"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID parameter",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Tipe transaksi not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing tipe transaksi with the provided data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-TipeTransaksi"
+                ],
+                "summary": "Update existing tipe transaksi",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tipe Transaksi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Tipe transaksi update data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputTipeTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success update tipe transaksi",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Tipe transaksi not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing tipe transaksi by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterData-TipeTransaksi"
+                ],
+                "summary": "Delete tipe transaksi",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tipe Transaksi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete tipe transaksi",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID parameter",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Tipe transaksi not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaksi": {
+            "get": {
+                "description": "Get all transactions with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Get all transactions",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all transactions success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseGetAllSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dtos.ResTransaksi"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "$ref": "#/definitions/helpers.Pagination"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid pagination data",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "No transactions found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new financial transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Create new transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.InputTransaksi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Create transaction success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid input data or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaksi/{id}": {
+            "get": {
+                "description": "Get transaction details by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Get transaction details",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get transaction detail success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseGetDetailSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dtos.ResTransaksi"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid transaction ID",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Transaction not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing transaction with partial data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Update transaction",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update transaction data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateTransaksiRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update transaction success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid transaction ID or request data",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Transaction not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific transaction by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Delete transaction",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete transaction success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid transaction ID",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Transaction not found",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaksi/{id}/status": {
+            "patch": {
+                "description": "Update the status of a specific transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Update transaction status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Status update data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_id": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update transaction status success",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseCUDSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid transaction ID or missing status_id",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dtos.InputJenisPembayaran": {
+            "type": "object",
+            "required": [
+                "nama"
+            ],
+            "properties": {
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.InputStatusTransaksi": {
+            "type": "object",
+            "required": [
+                "nama"
+            ],
+            "properties": {
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.InputTipeTransaksi": {
+            "type": "object",
+            "required": [
+                "nama"
+            ],
+            "properties": {
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.InputTransaksi": {
+            "type": "object",
+            "required": [
+                "id_jenis_pembayaran",
+                "id_kategori",
+                "id_tipe_transaksi",
+                "jumlah",
+                "nama_transaksi",
+                "tanggal"
+            ],
+            "properties": {
+                "bukti_transaksi": {
+                    "description": "atau path lokal",
+                    "type": "string"
+                },
+                "id_jenis_pembayaran": {
+                    "type": "integer"
+                },
+                "id_kategori": {
+                    "type": "integer"
+                },
+                "id_tipe_transaksi": {
+                    "type": "integer"
+                },
+                "jumlah": {
+                    "type": "number"
+                },
+                "keterangan": {
+                    "type": "string"
+                },
+                "nama_transaksi": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "tanggal": {
+                    "description": "yyyy-mm-dd",
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ResJenisPembayaran": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ResStatusTransaksi": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ResTipeTransaksi": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nama": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ResTransaksi": {
+            "type": "object",
+            "properties": {
+                "bukti_transaksi": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "id_jenis_pembayaran": {
+                    "type": "integer"
+                },
+                "id_kategori": {
+                    "type": "integer"
+                },
+                "id_status_transaksi": {
+                    "type": "integer"
+                },
+                "id_tipe_transaksi": {
+                    "type": "integer"
+                },
+                "id_user": {
+                    "type": "integer"
+                },
+                "jumlah": {
+                    "type": "number"
+                },
+                "keterangan": {
+                    "type": "string"
+                },
+                "komentar_manajer": {
+                    "type": "string"
+                },
+                "tanggal": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.UpdateTransaksiRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "bukti_transaksi": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "id_jenis_pembayaran": {
+                    "type": "integer"
+                },
+                "id_kategori": {
+                    "type": "integer"
+                },
+                "id_status_transaksi": {
+                    "type": "integer"
+                },
+                "id_tipe_transaksi": {
+                    "type": "integer"
+                },
+                "id_user": {
+                    "type": "integer"
+                },
+                "jumlah": {
+                    "type": "number"
+                },
+                "keterangan": {
+                    "type": "string"
+                },
+                "komentar_manajer": {
+                    "type": "string"
+                },
+                "tanggal": {
+                    "type": "string"
+                }
+            }
+        },
+        "helpers.Pagination": {
+            "type": "object",
+            "properties": {
+                "current_page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "next_page": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "page_size": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "previous_page": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "total_data": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "total_page": {
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        },
+        "helpers.ResponseCUDSuccess": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Success"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "helpers.ResponseError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "error message"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "helpers.ResponseGetAllSuccess": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "success message"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/helpers.Pagination"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "helpers.ResponseGetDetailSuccess": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "success message"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "pelaporan_keuangan_features_master_data_dtos.Pagination": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

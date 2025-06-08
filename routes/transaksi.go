@@ -7,7 +7,7 @@ import (
 )
 
 func Transaksi(r *gin.Engine, handler transaksi.Handler) {
-	transaksi := r.Group("/transaksi")
+	transaksi := r.Group("/api/v1/transaksi")
 
 	transaksi.GET("", handler.GetTransaksi)
 	transaksi.POST("", handler.CreateTransaksi)

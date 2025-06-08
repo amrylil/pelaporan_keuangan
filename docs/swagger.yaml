@@ -1,0 +1,904 @@
+basePath: /api/v1
+definitions:
+  dtos.InputJenisPembayaran:
+    properties:
+      nama:
+        type: string
+    required:
+    - nama
+    type: object
+  dtos.InputStatusTransaksi:
+    properties:
+      nama:
+        type: string
+    required:
+    - nama
+    type: object
+  dtos.InputTipeTransaksi:
+    properties:
+      nama:
+        type: string
+    required:
+    - nama
+    type: object
+  dtos.InputTransaksi:
+    properties:
+      bukti_transaksi:
+        description: atau path lokal
+        type: string
+      id_jenis_pembayaran:
+        type: integer
+      id_kategori:
+        type: integer
+      id_tipe_transaksi:
+        type: integer
+      jumlah:
+        type: number
+      keterangan:
+        type: string
+      nama_transaksi:
+        maxLength: 255
+        type: string
+      tanggal:
+        description: yyyy-mm-dd
+        type: string
+    required:
+    - id_jenis_pembayaran
+    - id_kategori
+    - id_tipe_transaksi
+    - jumlah
+    - nama_transaksi
+    - tanggal
+    type: object
+  dtos.ResJenisPembayaran:
+    properties:
+      id:
+        type: integer
+      nama:
+        type: string
+    type: object
+  dtos.ResStatusTransaksi:
+    properties:
+      id:
+        type: integer
+      nama:
+        type: string
+    type: object
+  dtos.ResTipeTransaksi:
+    properties:
+      id:
+        type: integer
+      nama:
+        type: string
+    type: object
+  dtos.ResTransaksi:
+    properties:
+      bukti_transaksi:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      id_jenis_pembayaran:
+        type: integer
+      id_kategori:
+        type: integer
+      id_status_transaksi:
+        type: integer
+      id_tipe_transaksi:
+        type: integer
+      id_user:
+        type: integer
+      jumlah:
+        type: number
+      keterangan:
+        type: string
+      komentar_manajer:
+        type: string
+      tanggal:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dtos.UpdateTransaksiRequest:
+    properties:
+      bukti_transaksi:
+        type: string
+      id:
+        type: integer
+      id_jenis_pembayaran:
+        type: integer
+      id_kategori:
+        type: integer
+      id_status_transaksi:
+        type: integer
+      id_tipe_transaksi:
+        type: integer
+      id_user:
+        type: integer
+      jumlah:
+        type: number
+      keterangan:
+        type: string
+      komentar_manajer:
+        type: string
+      tanggal:
+        type: string
+    required:
+    - id
+    type: object
+  helpers.Pagination:
+    properties:
+      current_page:
+        example: 1
+        type: integer
+      next_page:
+        example: 2
+        type: integer
+      page_size:
+        example: 5
+        type: integer
+      previous_page:
+        example: 0
+        type: integer
+      total_data:
+        example: 50
+        type: integer
+      total_page:
+        example: 10
+        type: integer
+    type: object
+  helpers.ResponseCUDSuccess:
+    properties:
+      message:
+        example: Success
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  helpers.ResponseError:
+    properties:
+      message:
+        example: error message
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
+  helpers.ResponseGetAllSuccess:
+    properties:
+      data: {}
+      message:
+        example: success message
+        type: string
+      pagination:
+        $ref: '#/definitions/helpers.Pagination'
+      status:
+        example: true
+        type: boolean
+    type: object
+  helpers.ResponseGetDetailSuccess:
+    properties:
+      data: {}
+      message:
+        example: success message
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  pelaporan_keuangan_features_master_data_dtos.Pagination:
+    properties:
+      page:
+        type: integer
+      size:
+        type: integer
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API untuk sistem pelaporan keuangan dengan manajemen users, transaksi,
+    dan master data
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Pelaporan Keuangan API
+  version: "1.0"
+paths:
+  /jenis-pembayaran:
+    get:
+      consumes:
+      - application/json
+      description: Get all payment types with pagination
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get all payment types success
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseGetAllSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dtos.ResJenisPembayaran'
+                  type: array
+                pagination:
+                  $ref: '#/definitions/helpers.Pagination'
+              type: object
+        "400":
+          description: Bad request - Invalid pagination data
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: No payment types found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get all payment types
+      tags:
+      - MasterData-JenisPembayaran
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment type
+      parameters:
+      - description: Payment type data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputJenisPembayaran'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Create payment type success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid input data or validation error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Create new payment type
+      tags:
+      - MasterData-JenisPembayaran
+  /jenis-pembayaran/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific payment type by ID
+      parameters:
+      - description: Payment Type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete payment type success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid payment type ID
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Payment type not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Delete payment type
+      tags:
+      - MasterData-JenisPembayaran
+    get:
+      consumes:
+      - application/json
+      description: Get payment type details by ID
+      parameters:
+      - description: Payment Type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get payment type detail success
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseGetDetailSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/dtos.ResJenisPembayaran'
+              type: object
+        "400":
+          description: Bad request - Invalid payment type ID
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Payment type not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get payment type details
+      tags:
+      - MasterData-JenisPembayaran
+    put:
+      consumes:
+      - application/json
+      description: Update an existing payment type
+      parameters:
+      - description: Payment Type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update payment type data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputJenisPembayaran'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update payment type success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid payment type ID or request data
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Payment type not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Update payment type
+      tags:
+      - MasterData-JenisPembayaran
+  /status-transaksi:
+    post:
+      consumes:
+      - application/json
+      description: Create a new status transaksi with the provided data
+      parameters:
+      - description: Status transaksi input data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputStatusTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success create status transaksi
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Invalid request data or validation error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Create new status transaksi
+      tags:
+      - MasterData-StatusTransaksi
+  /status-transaksi/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing status transaksi by ID
+      parameters:
+      - description: Status Transaksi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success delete status transaksi
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Invalid ID parameter
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Status transaksi not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Delete status transaksi
+      tags:
+      - MasterData-StatusTransaksi
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed information of a specific status transaksi by
+        ID
+      parameters:
+      - description: Status Transaksi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success get status transaksi detail
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseGetDetailSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dtos.ResStatusTransaksi'
+                  type: array
+              type: object
+        "400":
+          description: Invalid ID parameter
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Status transaksi not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get status transaksi by ID
+      tags:
+      - MasterData-StatusTransaksi
+    put:
+      consumes:
+      - application/json
+      description: Update an existing status transaksi with the provided data
+      parameters:
+      - description: Status Transaksi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status transaksi update data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputStatusTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success update status transaksi
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Invalid request data or validation error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Status transaksi not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Update existing status transaksi
+      tags:
+      - MasterData-StatusTransaksi
+  /tipe-transaksi:
+    post:
+      consumes:
+      - application/json
+      description: Create a new tipe transaksi with the provided data
+      parameters:
+      - description: Tipe transaksi input data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputTipeTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success create tipe transaksi
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Invalid request data or validation error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Create new tipe transaksi
+      tags:
+      - MasterData-TipeTransaksi
+  /tipe-transaksi/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing tipe transaksi by ID
+      parameters:
+      - description: Tipe Transaksi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success delete tipe transaksi
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Invalid ID parameter
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Tipe transaksi not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Delete tipe transaksi
+      tags:
+      - MasterData-TipeTransaksi
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed information of a specific tipe transaksi by ID
+      parameters:
+      - description: Tipe Transaksi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success get tipe transaksi detail
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseGetDetailSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/dtos.ResTipeTransaksi'
+              type: object
+        "400":
+          description: Invalid ID parameter
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Tipe transaksi not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get tipe transaksi by ID
+      tags:
+      - MasterData-TipeTransaksi
+    put:
+      consumes:
+      - application/json
+      description: Update an existing tipe transaksi with the provided data
+      parameters:
+      - description: Tipe Transaksi ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Tipe transaksi update data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputTipeTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success update tipe transaksi
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Invalid request data or validation error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Tipe transaksi not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Update existing tipe transaksi
+      tags:
+      - MasterData-TipeTransaksi
+  /transaksi:
+    get:
+      consumes:
+      - application/json
+      description: Get all transactions with pagination
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get all transactions success
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseGetAllSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dtos.ResTransaksi'
+                  type: array
+                pagination:
+                  $ref: '#/definitions/helpers.Pagination'
+              type: object
+        "400":
+          description: Bad request - Invalid pagination data
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: No transactions found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get all transactions
+      tags:
+      - Transaksi
+    post:
+      consumes:
+      - application/json
+      description: Create a new financial transaction
+      parameters:
+      - description: Transaction data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputTransaksi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Create transaction success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid input data or validation error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Create new transaction
+      tags:
+      - Transaksi
+  /transaksi/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific transaction by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete transaction success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid transaction ID
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Delete transaction
+      tags:
+      - Transaksi
+    get:
+      consumes:
+      - application/json
+      description: Get transaction details by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get transaction detail success
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseGetDetailSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/dtos.ResTransaksi'
+              type: object
+        "400":
+          description: Bad request - Invalid transaction ID
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get transaction details
+      tags:
+      - Transaksi
+    put:
+      consumes:
+      - application/json
+      description: Update an existing transaction with partial data
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update transaction data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateTransaksiRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update transaction success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid transaction ID or request data
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Update transaction
+      tags:
+      - Transaksi
+  /transaksi/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update the status of a specific transaction
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status update data
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            status_id:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update transaction status success
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad request - Invalid transaction ID or missing status_id
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Update transaction status
+      tags:
+      - Transaksi
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

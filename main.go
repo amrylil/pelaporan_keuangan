@@ -23,9 +23,33 @@ import (
 	tu "pelaporan_keuangan/features/transaksi/usecase"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
+
+	// Import generated docs - PENTING: Ini yang mungkin missing
+	_ "pelaporan_keuangan/docs"
 )
 
+// @title Pelaporan Keuangan API
+// @version 1.0
+// @description API untuk sistem pelaporan keuangan dengan manajemen users, transaksi, dan master data
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8000
+// @BasePath /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	log.Println("Starting application...")
 
@@ -49,14 +73,32 @@ func main() {
 	}
 	log.Println("Migration success")
 
+	// Setup routes
 	routes.Users(r, UsersHandler(db))
 	routes.Transaksi(r, TransaksiHandler(db))
 	routes.Master_data(r, MasterDataHandler(db))
 	log.Println("Routes setup complete")
 
+	// Root endpoint
 	r.GET("/", func(ctx *gin.Context) {
-		ctx.String(http.StatusOK, "hello!😍")
+		ctx.String(http.StatusOK, "Pelaporan Keuangan API is running! 😍")
 	})
+
+	// Health check endpoint
+	r.GET("/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":  "ok",
+			"message": "Pelaporan Keuangan API is healthy",
+		})
+	})
+
+	// Swagger endpoint - TAMBAHAN INI
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Alternative swagger route (optional)
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	log.Println("Swagger UI available at: http://localhost:" + cfg.SERVER_PORT + "/swagger/index.html")
 
 	log.Printf("Starting server on port :%s", cfg.SERVER_PORT)
 	err = r.Run(fmt.Sprintf(":%s", cfg.SERVER_PORT))

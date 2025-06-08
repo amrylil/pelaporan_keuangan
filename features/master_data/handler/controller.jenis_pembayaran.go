@@ -10,6 +10,19 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// GetJenisPembayaran godoc
+// @Summary Get all payment types
+// @Description Get all payment types with pagination
+// @Tags MasterData-JenisPembayaran
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param size query int false "Page size" default(5)
+// @Success 200 {object} helpers.ResponseGetAllSuccess{data=[]dtos.ResJenisPembayaran,pagination=helpers.Pagination} "Get all payment types success"
+// @Failure 400 {object} helpers.ResponseError "Bad request - Invalid pagination data"
+// @Failure 404 {object} helpers.ResponseError "No payment types found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /jenis-pembayaran [get]
 func (ctl *controller) GetJenisPembayaran(c *gin.Context) {
 	var pagination dtos.Pagination
 	if err := c.ShouldBindQuery(&pagination); err != nil {
@@ -46,6 +59,18 @@ func (ctl *controller) GetJenisPembayaran(c *gin.Context) {
 	})
 }
 
+// JenisPembayaranDetails godoc
+// @Summary Get payment type details
+// @Description Get payment type details by ID
+// @Tags MasterData-JenisPembayaran
+// @Accept json
+// @Produce json
+// @Param id path int true "Payment Type ID"
+// @Success 200 {object} helpers.ResponseGetDetailSuccess{data=dtos.ResJenisPembayaran} "Get payment type detail success"
+// @Failure 400 {object} helpers.ResponseError "Bad request - Invalid payment type ID"
+// @Failure 404 {object} helpers.ResponseError "Payment type not found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /jenis-pembayaran/{id} [get]
 func (ctl *controller) JenisPembayaranDetails(c *gin.Context) {
 	JenisPembayaranID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
@@ -72,6 +97,17 @@ func (ctl *controller) JenisPembayaranDetails(c *gin.Context) {
 	})
 }
 
+// CreateJenisPembayaran godoc
+// @Summary Create new payment type
+// @Description Create a new payment type
+// @Tags MasterData-JenisPembayaran
+// @Accept json
+// @Produce json
+// @Param request body dtos.InputJenisPembayaran true "Payment type data"
+// @Success 200 {object} helpers.ResponseCUDSuccess "Create payment type success"
+// @Failure 400 {object} helpers.ResponseError "Bad request - Invalid input data or validation error"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /jenis-pembayaran [post]
 func (ctl *controller) CreateJenisPembayaran(c *gin.Context) {
 	var input dtos.InputJenisPembayaran
 
@@ -104,6 +140,19 @@ func (ctl *controller) CreateJenisPembayaran(c *gin.Context) {
 	})
 }
 
+// UpdateJenisPembayaran godoc
+// @Summary Update payment type
+// @Description Update an existing payment type
+// @Tags MasterData-JenisPembayaran
+// @Accept json
+// @Produce json
+// @Param id path int true "Payment Type ID"
+// @Param request body dtos.InputJenisPembayaran true "Update payment type data"
+// @Success 200 {object} helpers.ResponseCUDSuccess "Update payment type success"
+// @Failure 400 {object} helpers.ResponseError "Bad request - Invalid payment type ID or request data"
+// @Failure 404 {object} helpers.ResponseError "Payment type not found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /jenis-pembayaran/{id} [put]
 func (ctl *controller) UpdateJenisPembayaran(c *gin.Context) {
 	var input dtos.InputJenisPembayaran
 	JenisPembayaranID, err := strconv.ParseUint(c.Param("id"), 10, 64)
@@ -152,6 +201,18 @@ func (ctl *controller) UpdateJenisPembayaran(c *gin.Context) {
 	})
 }
 
+// DeleteJenisPembayaran godoc
+// @Summary Delete payment type
+// @Description Delete a specific payment type by ID
+// @Tags MasterData-JenisPembayaran
+// @Accept json
+// @Produce json
+// @Param id path int true "Payment Type ID"
+// @Success 200 {object} helpers.ResponseCUDSuccess "Delete payment type success"
+// @Failure 400 {object} helpers.ResponseError "Bad request - Invalid payment type ID"
+// @Failure 404 {object} helpers.ResponseError "Payment type not found"
+// @Failure 500 {object} helpers.ResponseError "Internal server error"
+// @Router /jenis-pembayaran/{id} [delete]
 func (ctl *controller) DeleteJenisPembayaran(c *gin.Context) {
 	JenisPembayaranID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 

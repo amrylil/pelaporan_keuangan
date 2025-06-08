@@ -7,7 +7,7 @@ import (
 )
 
 func Users(r *gin.Engine, handler users.Handler) {
-	users := r.Group("/users")
+	users := r.Group("/api/v1/users")
 
 	users.GET("", handler.GetUsers)
 	users.POST("", handler.CreateUsers)
