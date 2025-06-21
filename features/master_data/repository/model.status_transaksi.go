@@ -38,7 +38,7 @@ func (mdl *model) InsertTipeTransaksi(newTipeTransaksi master_data.TipeTransaksi
 	return nil
 }
 
-func (mdl *model) SelectTipeTransaksiByID(tipeTransaksiID uint) (*master_data.TipeTransaksi, error) {
+func (mdl *model) SelectTipeTransaksiByID(tipeTransaksiID uint64) (*master_data.TipeTransaksi, error) {
 	var tipe_transaksi master_data.TipeTransaksi
 	err := mdl.db.First(&tipe_transaksi, tipeTransaksiID).Error
 
@@ -60,7 +60,7 @@ func (mdl *model) UpdateTipeTransaksi(tipe_transaksi master_data.TipeTransaksi) 
 	return err
 }
 
-func (mdl *model) DeleteTipeTransaksiByID(tipeTransaksiID uint) error {
+func (mdl *model) DeleteTipeTransaksiByID(tipeTransaksiID uint64) error {
 	err := mdl.db.Delete(&master_data.TipeTransaksi{}, tipeTransaksiID).Error
 
 	if err != nil {

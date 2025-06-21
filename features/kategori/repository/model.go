@@ -49,7 +49,7 @@ func (mdl *model) Insert(newKategori kategori.Kategori) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(kategoriID uint) (*kategori.Kategori, error) {
+func (mdl *model) SelectByID(kategoriID uint64) (*kategori.Kategori, error) {
 	var kategori kategori.Kategori
 	err := mdl.db.First(&kategori, kategoriID).Error
 
@@ -71,7 +71,7 @@ func (mdl *model) Update(kategori kategori.Kategori) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(kategoriID uint) error {
+func (mdl *model) DeleteByID(kategoriID uint64) error {
 	err := mdl.db.Delete(&kategori.Kategori{}, kategoriID).Error
 
 	if err != nil {

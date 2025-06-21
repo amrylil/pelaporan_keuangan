@@ -67,7 +67,7 @@ func (ctl *controller) LaporanDetails(c *gin.Context) {
 		return
 	}
 
-	laporan, err := ctl.service.FindByID(uint(laporanID))
+	laporan, err := ctl.service.FindByID(laporanID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -125,7 +125,7 @@ func (ctl *controller) UpdateLaporan(c *gin.Context) {
 		return
 	}
 
-	laporan, err := ctl.service.FindByID(uint(laporanID))
+	laporan, err := ctl.service.FindByID(laporanID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -152,7 +152,7 @@ func (ctl *controller) UpdateLaporan(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Modify(input, uint(laporanID))
+	err = ctl.service.Modify(input, laporanID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -173,7 +173,7 @@ func (ctl *controller) DeleteLaporan(c *gin.Context) {
 		return
 	}
 
-	laporan, err := ctl.service.FindByID(uint(laporanID))
+	laporan, err := ctl.service.FindByID(laporanID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -185,7 +185,7 @@ func (ctl *controller) DeleteLaporan(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(uint(laporanID))
+	err = ctl.service.Remove(laporanID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

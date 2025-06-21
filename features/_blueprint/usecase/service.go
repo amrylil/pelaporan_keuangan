@@ -42,7 +42,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResPlaceholder, int64, error
 	return placeholders, total, nil
 }
 
-func (svc *service) FindByID(placeholderID uint) (*dtos.ResPlaceholder, error) {
+func (svc *service) FindByID(placeholderID uint64) (*dtos.ResPlaceholder, error) {
 	res := dtos.ResPlaceholder{}
 	placeholder, err := svc.model.SelectByID(placeholderID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (svc *service) Create(newPlaceholder dtos.InputPlaceholder) error {
 	return nil
 }
 
-func (svc *service) Modify(placeholderData dtos.InputPlaceholder, placeholderID uint) error {
+func (svc *service) Modify(placeholderData dtos.InputPlaceholder, placeholderID uint64) error {
 	newPlaceholder := _blueprint.Placeholder{}
 
 	err := smapping.FillStruct(&newPlaceholder, smapping.MapFields(placeholderData))
@@ -103,7 +103,7 @@ func (svc *service) Modify(placeholderData dtos.InputPlaceholder, placeholderID 
 	return nil
 }
 
-func (svc *service) Remove(placeholderID uint) error {
+func (svc *service) Remove(placeholderID uint64) error {
 	err := svc.model.DeleteByID(placeholderID)
 
 	if err != nil {

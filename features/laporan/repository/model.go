@@ -49,7 +49,7 @@ func (mdl *model) Insert(newLaporan laporan.Laporan) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(laporanID uint) (*laporan.Laporan, error) {
+func (mdl *model) SelectByID(laporanID uint64) (*laporan.Laporan, error) {
 	var laporan laporan.Laporan
 	err := mdl.db.First(&laporan, laporanID).Error
 
@@ -71,7 +71,7 @@ func (mdl *model) Update(laporan laporan.Laporan) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(laporanID uint) error {
+func (mdl *model) DeleteByID(laporanID uint64) error {
 	err := mdl.db.Delete(&laporan.Laporan{}, laporanID).Error
 
 	if err != nil {

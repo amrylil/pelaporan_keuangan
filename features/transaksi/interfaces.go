@@ -9,22 +9,22 @@ import (
 type Repository interface {
 	GetAll(page, size int) ([]Transaksi, int64, error)
 	Insert(newTransaksi Transaksi) error
-	SelectByID(transaksiID uint) (*Transaksi, error)
+	SelectByID(transaksiID uint64) (*Transaksi, error)
 	Update(transaksi Transaksi) error
-	UpdatePartial(transaksiID uint, updates map[string]interface{}) error // NEW
-	DeleteByID(transaksiID uint) error
-	UpdateStatus(transaksiID uint, statusID int) error
+	UpdatePartial(transaksiID uint64, updates map[string]interface{}) error // NEW
+	DeleteByID(transaksiID uint64) error
+	UpdateStatus(transaksiID uint64, statusID int) error
 	GetWithFilter(filter dtos.TransaksiListRequest) ([]Transaksi, int64, error) // NEW
 }
 
 type Usecase interface {
 	FindAll(page, size int) ([]dtos.ResTransaksi, int64, error)
-	FindByID(transaksiID uint) (*dtos.ResTransaksi, error)
+	FindByID(transaksiID uint64) (*dtos.ResTransaksi, error)
 	Create(newTransaksi dtos.InputTransaksi) error
-	Modify(transaksiData dtos.InputTransaksi, transaksiID uint) error
+	Modify(transaksiData dtos.InputTransaksi, transaksiID uint64) error
 	ModifyPartial(updateData dtos.UpdateTransaksiRequest) error // NEW
-	Remove(transaksiID uint) error
-	ModifyStatus(transaksiID uint, statusID int) error
+	Remove(transaksiID uint64) error
+	ModifyStatus(transaksiID uint64, statusID int) error
 	FindWithFilter(filter dtos.TransaksiListRequest) ([]dtos.ResTransaksi, int64, error) // NEW
 }
 

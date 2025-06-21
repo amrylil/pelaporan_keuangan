@@ -67,7 +67,7 @@ func (ctl *controller) AuthDetails(c *gin.Context) {
 		return
 	}
 
-	auth, err := ctl.service.FindByID(uint(authID))
+	auth, err := ctl.service.FindByID(authID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -125,7 +125,7 @@ func (ctl *controller) UpdateAuth(c *gin.Context) {
 		return
 	}
 
-	auth, err := ctl.service.FindByID(uint(authID))
+	auth, err := ctl.service.FindByID(authID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -152,7 +152,7 @@ func (ctl *controller) UpdateAuth(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Modify(input, uint(authID))
+	err = ctl.service.Modify(input, authID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -173,7 +173,7 @@ func (ctl *controller) DeleteAuth(c *gin.Context) {
 		return
 	}
 
-	auth, err := ctl.service.FindByID(uint(authID))
+	auth, err := ctl.service.FindByID(authID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -185,7 +185,7 @@ func (ctl *controller) DeleteAuth(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(uint(authID))
+	err = ctl.service.Remove(authID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

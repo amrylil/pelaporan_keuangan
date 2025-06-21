@@ -9,41 +9,41 @@ import (
 type Repository interface {
 	GetAllJenisPembayaran(page, size int) ([]JenisPembayaran, int64, error)
 	InsertJenisPembayaran(newJenisPembayaran JenisPembayaran) error
-	SelectJenisPembayaranByID(jenisPembayaranID uint) (*JenisPembayaran, error)
+	SelectJenisPembayaranByID(jenisPembayaranID uint64) (*JenisPembayaran, error)
 	UpdateJenisPembayaran(jenisPembayaran JenisPembayaran) error
-	DeleteJenisPembayaranByID(jenisPembayaranID uint) error
+	DeleteJenisPembayaranByID(jenisPembayaranID uint64) error
 
 	GetAllTipeTransaksi(page, size int) ([]TipeTransaksi, int64, error)
 	InsertTipeTransaksi(newTipeTransaksi TipeTransaksi) error
-	SelectTipeTransaksiByID(tipeTransaksiID uint) (*TipeTransaksi, error)
+	SelectTipeTransaksiByID(tipeTransaksiID uint64) (*TipeTransaksi, error)
 	UpdateTipeTransaksi(tipeTransaksi TipeTransaksi) error
-	DeleteTipeTransaksiByID(tipeTransaksi uint) error
+	DeleteTipeTransaksiByID(tipeTransaksi uint64) error
 
 	GetAllStatusTransaksi(page, size int) ([]StatusTransaksi, int64, error)
 	InsertStatusTransaksi(newStatusTransaksi StatusTransaksi) error
-	SelectStatusTransaksiByID(statusTransaksiID uint) (*StatusTransaksi, error)
+	SelectStatusTransaksiByID(statusTransaksiID uint64) (*StatusTransaksi, error)
 	UpdateStatusTransaksi(statusTransaksi StatusTransaksi) error
-	DeleteStatusTransaksiByID(statusTransaksi uint) error
+	DeleteStatusTransaksiByID(statusTransaksi uint64) error
 }
 
 type Usecase interface {
 	FindAllTipeTransaksi(page, size int) ([]dtos.ResTipeTransaksi, int64, error)
-	FindTipeTransaksiByID(tipeTransaksiID uint) (*dtos.ResTipeTransaksi, error)
+	FindTipeTransaksiByID(tipeTransaksiID uint64) (*dtos.ResTipeTransaksi, error)
 	CreateTipeTransaksi(newTipeTransaksi dtos.InputTipeTransaksi) error
-	ModifyTipeTransaksi(tipeTransaksiData dtos.InputTipeTransaksi, TipeTransaksiID uint) error
-	RemoveTipeTransaksi(TipeTransaksiID uint) error
+	ModifyTipeTransaksi(tipeTransaksiData dtos.InputTipeTransaksi, TipeTransaksiID uint64) error
+	RemoveTipeTransaksi(TipeTransaksiID uint64) error
 
 	FindAllJenisPembayaran(page, size int) ([]dtos.ResJenisPembayaran, int64, error)
-	FindJenisPembayaranByID(jenisPembayaranID uint) (*dtos.ResJenisPembayaran, error)
+	FindJenisPembayaranByID(jenisPembayaranID uint64) (*dtos.ResJenisPembayaran, error)
 	CreateJenisPembayaran(newJenisPembayaran dtos.InputJenisPembayaran) error
-	ModifyJenisPembayaran(jenisPembayaranData dtos.InputJenisPembayaran, JenisPembayaranID uint) error
-	RemoveJenisPembayaran(JenisPembayaranID uint) error
+	ModifyJenisPembayaran(jenisPembayaranData dtos.InputJenisPembayaran, JenisPembayaranID uint64) error
+	RemoveJenisPembayaran(JenisPembayaranID uint64) error
 
 	FindAllStatusTransaksi(page, size int) ([]dtos.ResStatusTransaksi, int64, error)
-	FindStatusTransaksiByID(statusTransaksiID uint) (*dtos.ResStatusTransaksi, error)
+	FindStatusTransaksiByID(statusTransaksiID uint64) (*dtos.ResStatusTransaksi, error)
 	CreateStatusTransaksi(newStatusTransaksi dtos.InputStatusTransaksi) error
-	ModifyStatusTransaksi(statusTransaksiData dtos.InputStatusTransaksi, StatusTransaksiID uint) error
-	RemoveStatusTransaksi(statusTransaksiID uint) error
+	ModifyStatusTransaksi(statusTransaksiData dtos.InputStatusTransaksi, StatusTransaksiID uint64) error
+	RemoveStatusTransaksi(statusTransaksiID uint64) error
 }
 
 type Handler interface {

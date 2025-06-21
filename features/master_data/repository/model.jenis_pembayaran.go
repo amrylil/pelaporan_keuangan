@@ -38,7 +38,7 @@ func (mdl *model) InsertJenisPembayaran(newJenisPembayaran master_data.JenisPemb
 	return nil
 }
 
-func (mdl *model) SelectJenisPembayaranByID(jenisPembayaranID uint) (*master_data.JenisPembayaran, error) {
+func (mdl *model) SelectJenisPembayaranByID(jenisPembayaranID uint64) (*master_data.JenisPembayaran, error) {
 	var jenis_pembayaran master_data.JenisPembayaran
 	err := mdl.db.First(&jenis_pembayaran, jenisPembayaranID).Error
 
@@ -60,7 +60,7 @@ func (mdl *model) UpdateJenisPembayaran(jenis_pembayaran master_data.JenisPembay
 	return err
 }
 
-func (mdl *model) DeleteJenisPembayaranByID(jenisPembayaranID uint) error {
+func (mdl *model) DeleteJenisPembayaranByID(jenisPembayaranID uint64) error {
 	err := mdl.db.Delete(&master_data.JenisPembayaran{}, jenisPembayaranID).Error
 
 	if err != nil {

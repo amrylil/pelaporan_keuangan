@@ -7,7 +7,7 @@ import (
 type Log_audit struct {
 	gorm.Model
 
-	ID   uint   `gorm:"primaryKey"`
+	ID   uint64 `gorm:"primaryKey"`
 	Name string `gorm:"type:varchar(255)"`
 }
 

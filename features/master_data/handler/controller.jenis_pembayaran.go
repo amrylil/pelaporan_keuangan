@@ -79,7 +79,7 @@ func (ctl *controller) JenisPembayaranDetails(c *gin.Context) {
 		return
 	}
 
-	JenisPembayaran, err := ctl.service.FindJenisPembayaranByID(uint(JenisPembayaranID))
+	JenisPembayaran, err := ctl.service.FindJenisPembayaranByID(JenisPembayaranID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -161,7 +161,7 @@ func (ctl *controller) UpdateJenisPembayaran(c *gin.Context) {
 		return
 	}
 
-	JenisPembayaran, err := ctl.service.FindJenisPembayaranByID(uint(JenisPembayaranID))
+	JenisPembayaran, err := ctl.service.FindJenisPembayaranByID(JenisPembayaranID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -188,7 +188,7 @@ func (ctl *controller) UpdateJenisPembayaran(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.ModifyJenisPembayaran(input, uint(JenisPembayaranID))
+	err = ctl.service.ModifyJenisPembayaran(input, JenisPembayaranID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -221,7 +221,7 @@ func (ctl *controller) DeleteJenisPembayaran(c *gin.Context) {
 		return
 	}
 
-	JenisPembayaran, err := ctl.service.FindJenisPembayaranByID(uint(JenisPembayaranID))
+	JenisPembayaran, err := ctl.service.FindJenisPembayaranByID(JenisPembayaranID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -233,7 +233,7 @@ func (ctl *controller) DeleteJenisPembayaran(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.RemoveJenisPembayaran(uint(JenisPembayaranID))
+	err = ctl.service.RemoveJenisPembayaran(JenisPembayaranID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

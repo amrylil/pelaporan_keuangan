@@ -76,7 +76,7 @@ func (ctl *controller) TipeTransaksiDetails(c *gin.Context) {
 		return
 	}
 
-	tipeTransaksi, err := ctl.service.FindTipeTransaksiByID(uint(tipeTransaksiID))
+	tipeTransaksi, err := ctl.service.FindTipeTransaksiByID(tipeTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -156,7 +156,7 @@ func (ctl *controller) UpdateTipeTransaksi(c *gin.Context) {
 		return
 	}
 
-	tipeTransaksi, err := ctl.service.FindTipeTransaksiByID(uint(tipeTransaksiID))
+	tipeTransaksi, err := ctl.service.FindTipeTransaksiByID(tipeTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -182,7 +182,7 @@ func (ctl *controller) UpdateTipeTransaksi(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.ModifyTipeTransaksi(input, uint(tipeTransaksiID))
+	err = ctl.service.ModifyTipeTransaksi(input, tipeTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -213,7 +213,7 @@ func (ctl *controller) DeleteTipeTransaksi(c *gin.Context) {
 		return
 	}
 
-	tipeTransaksi, err := ctl.service.FindTipeTransaksiByID(uint(tipeTransaksiID))
+	tipeTransaksi, err := ctl.service.FindTipeTransaksiByID(tipeTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -224,7 +224,7 @@ func (ctl *controller) DeleteTipeTransaksi(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.RemoveTipeTransaksi(uint(tipeTransaksiID))
+	err = ctl.service.RemoveTipeTransaksi(tipeTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return

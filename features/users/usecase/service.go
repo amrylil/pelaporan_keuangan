@@ -42,7 +42,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResUsers, int64, error) {
 	return userss, total, nil
 }
 
-func (svc *service) FindByID(usersID uint) (*dtos.ResUsers, error) {
+func (svc *service) FindByID(usersID uint64) (*dtos.ResUsers, error) {
 	res := dtos.ResUsers{}
 	users, err := svc.model.SelectByID(usersID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (svc *service) Create(newUsers dtos.InputUsers) error {
 	return nil
 }
 
-func (svc *service) Modify(usersData dtos.InputUsers, usersID uint) error {
+func (svc *service) Modify(usersData dtos.InputUsers, usersID uint64) error {
 	newUsers := users.Users{}
 
 	err := smapping.FillStruct(&newUsers, smapping.MapFields(usersData))
@@ -103,7 +103,7 @@ func (svc *service) Modify(usersData dtos.InputUsers, usersID uint) error {
 	return nil
 }
 
-func (svc *service) Remove(usersID uint) error {
+func (svc *service) Remove(usersID uint64) error {
 	err := svc.model.DeleteByID(usersID)
 
 	if err != nil {

@@ -42,7 +42,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResAuth, int64, error) {
 	return auths, total, nil
 }
 
-func (svc *service) FindByID(authID uint) (*dtos.ResAuth, error) {
+func (svc *service) FindByID(authID uint64) (*dtos.ResAuth, error) {
 	res := dtos.ResAuth{}
 	auth, err := svc.model.SelectByID(authID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (svc *service) Create(newAuth dtos.InputAuth) error {
 	return nil
 }
 
-func (svc *service) Modify(authData dtos.InputAuth, authID uint) error {
+func (svc *service) Modify(authData dtos.InputAuth, authID uint64) error {
 	newAuth := auth.Auth{}
 
 	err := smapping.FillStruct(&newAuth, smapping.MapFields(authData))
@@ -103,7 +103,7 @@ func (svc *service) Modify(authData dtos.InputAuth, authID uint) error {
 	return nil
 }
 
-func (svc *service) Remove(authID uint) error {
+func (svc *service) Remove(authID uint64) error {
 	err := svc.model.DeleteByID(authID)
 
 	if err != nil {

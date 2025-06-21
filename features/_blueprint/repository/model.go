@@ -49,7 +49,7 @@ func (mdl *model) Insert(newPlaceholder _blueprint.Placeholder) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(placeholderID uint) (*_blueprint.Placeholder, error) {
+func (mdl *model) SelectByID(placeholderID uint64) (*_blueprint.Placeholder, error) {
 	var placeholder _blueprint.Placeholder
 	err := mdl.db.First(&placeholder, placeholderID).Error
 
@@ -71,7 +71,7 @@ func (mdl *model) Update(placeholder _blueprint.Placeholder) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(placeholderID uint) error {
+func (mdl *model) DeleteByID(placeholderID uint64) error {
 	err := mdl.db.Delete(&_blueprint.Placeholder{}, placeholderID).Error
 
 	if err != nil {

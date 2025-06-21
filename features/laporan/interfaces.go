@@ -9,17 +9,17 @@ import (
 type Repository interface {
 	GetAll(page, size int) ([]Laporan, int64, error)
 	Insert(newLaporan Laporan) error
-	SelectByID(laporanID uint) (*Laporan, error)
+	SelectByID(laporanID uint64) (*Laporan, error)
 	Update(laporan Laporan) error
-	DeleteByID(laporanID uint) error
+	DeleteByID(laporanID uint64) error
 }
 
 type Usecase interface {
 	FindAll(page, size int) ([]dtos.ResLaporan, int64, error)
-	FindByID(laporanID uint) (*dtos.ResLaporan, error)
+	FindByID(laporanID uint64) (*dtos.ResLaporan, error)
 	Create(newLaporan dtos.InputLaporan) error
-	Modify(laporanData dtos.InputLaporan, laporanID uint) error
-	Remove(laporanID uint) error
+	Modify(laporanData dtos.InputLaporan, laporanID uint64) error
+	Remove(laporanID uint64) error
 }
 
 type Handler interface {

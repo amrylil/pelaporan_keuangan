@@ -67,7 +67,7 @@ func (ctl *controller) UsersDetails(c *gin.Context) {
 		return
 	}
 
-	users, err := ctl.service.FindByID(uint(usersID))
+	users, err := ctl.service.FindByID(usersID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -125,7 +125,7 @@ func (ctl *controller) UpdateUsers(c *gin.Context) {
 		return
 	}
 
-	users, err := ctl.service.FindByID(uint(usersID))
+	users, err := ctl.service.FindByID(usersID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -152,7 +152,7 @@ func (ctl *controller) UpdateUsers(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Modify(input, uint(usersID))
+	err = ctl.service.Modify(input, usersID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -173,7 +173,7 @@ func (ctl *controller) DeleteUsers(c *gin.Context) {
 		return
 	}
 
-	users, err := ctl.service.FindByID(uint(usersID))
+	users, err := ctl.service.FindByID(usersID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -185,7 +185,7 @@ func (ctl *controller) DeleteUsers(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(uint(usersID))
+	err = ctl.service.Remove(usersID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

@@ -1,22 +1,11 @@
 package helpers
 
 import (
-	"fmt"
-
-	"github.com/sony/sonyflake"
+	"math/rand/v2" // Gunakan package rand v2 yang lebih modern (jika Go Anda versi 1.22+)
 )
 
-func GenerateID() uint {
-	sf := sonyflake.NewSonyflake(sonyflake.Settings{})
-	if sf == nil {
-		fmt.Println("Sonyflake not created")
-		return 0
-	}
-
-	id, err := sf.NextID()
-	if err != nil {
-		fmt.Println("Failed to generate ID:", err)
-		return 0
-	}
-	return uint(id)
+// Fungsi ini akan menghasilkan sebuah angka uint64 acak yang unik.
+// Jauh lebih sederhana dari Sonyflake.
+func GenerateID() uint64 {
+	return uint64(rand.IntN(90000000) + 10000000)
 }

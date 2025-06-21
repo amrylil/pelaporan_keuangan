@@ -37,17 +37,17 @@ type TransaksiDetailResponse struct {
 
 // DTOs untuk relasi (sesuaikan dengan struktur model Anda)
 type TipeTransaksiResponse struct {
-	ID   uint   `json:"id"`
+	ID   uint64 `json:"id"`
 	Nama string `json:"nama"`
 }
 
 type StatusTransaksiResponse struct {
-	ID   uint   `json:"id"`
+	ID   uint64 `json:"id"`
 	Nama string `json:"nama"`
 }
 
 type KategoriResponse struct {
-	ID   uint   `json:"id"`
+	ID   uint64 `json:"id"`
 	Nama string `json:"nama"`
 }
 
@@ -58,7 +58,7 @@ type UserResponse struct {
 }
 
 type JenisPembayaranResponse struct {
-	ID   uint   `json:"id"`
+	ID   uint64 `json:"id"`
 	Nama string `json:"nama"`
 }
 

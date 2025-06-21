@@ -49,7 +49,7 @@ func (mdl *model) Insert(newAuth auth.Auth) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(authID uint) (*auth.Auth, error) {
+func (mdl *model) SelectByID(authID uint64) (*auth.Auth, error) {
 	var auth auth.Auth
 	err := mdl.db.First(&auth, authID).Error
 
@@ -71,7 +71,7 @@ func (mdl *model) Update(auth auth.Auth) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(authID uint) error {
+func (mdl *model) DeleteByID(authID uint64) error {
 	err := mdl.db.Delete(&auth.Auth{}, authID).Error
 
 	if err != nil {

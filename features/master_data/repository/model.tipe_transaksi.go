@@ -38,7 +38,7 @@ func (mdl *model) InsertStatusTransaksi(newStatusTransaksi master_data.StatusTra
 	return nil
 }
 
-func (mdl *model) SelectStatusTransaksiByID(statusTransaksiID uint) (*master_data.StatusTransaksi, error) {
+func (mdl *model) SelectStatusTransaksiByID(statusTransaksiID uint64) (*master_data.StatusTransaksi, error) {
 	var status_transaksi master_data.StatusTransaksi
 	err := mdl.db.First(&status_transaksi, statusTransaksiID).Error
 
@@ -60,7 +60,7 @@ func (mdl *model) UpdateStatusTransaksi(status_transaksi master_data.StatusTrans
 	return err
 }
 
-func (mdl *model) DeleteStatusTransaksiByID(statusTransaksiID uint) error {
+func (mdl *model) DeleteStatusTransaksiByID(statusTransaksiID uint64) error {
 	err := mdl.db.Delete(&master_data.StatusTransaksi{}, statusTransaksiID).Error
 
 	if err != nil {

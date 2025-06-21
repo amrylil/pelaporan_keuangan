@@ -32,7 +32,7 @@ func (svc *service) FindAllTipeTransaksi(page, size int) ([]dtos.ResTipeTransaks
 	return tipe_transaksis, total, nil
 }
 
-func (svc *service) FindTipeTransaksiByID(tipeTransaksiID uint) (*dtos.ResTipeTransaksi, error) {
+func (svc *service) FindTipeTransaksiByID(tipeTransaksiID uint64) (*dtos.ResTipeTransaksi, error) {
 	res := dtos.ResTipeTransaksi{}
 	tipe_transaksi, err := svc.model.SelectTipeTransaksiByID(tipeTransaksiID)
 	if err != nil {
@@ -73,7 +73,7 @@ func (svc *service) CreateTipeTransaksi(newTipeTransaksi dtos.InputTipeTransaksi
 	return nil
 }
 
-func (svc *service) ModifyTipeTransaksi(tipeTransaksi dtos.InputTipeTransaksi, tipeTransaksiID uint) error {
+func (svc *service) ModifyTipeTransaksi(tipeTransaksi dtos.InputTipeTransaksi, tipeTransaksiID uint64) error {
 	newTipeTransaksi := master_data.TipeTransaksi{}
 
 	err := smapping.FillStruct(&newTipeTransaksi, smapping.MapFields(tipeTransaksi))
@@ -93,7 +93,7 @@ func (svc *service) ModifyTipeTransaksi(tipeTransaksi dtos.InputTipeTransaksi, t
 	return nil
 }
 
-func (svc *service) RemoveTipeTransaksi(tipeTransaksiID uint) error {
+func (svc *service) RemoveTipeTransaksi(tipeTransaksiID uint64) error {
 	err := svc.model.DeleteTipeTransaksiByID(tipeTransaksiID)
 
 	if err != nil {

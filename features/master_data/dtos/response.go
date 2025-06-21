@@ -5,14 +5,14 @@ type ResMaster_data struct {
 }
 
 type ResJenisPembayaran struct {
-	ID   uint   `json:"id`
+	ID   uint64 `json:"id`
 	Nama string `json:"nama"`
 }
 type ResTipeTransaksi struct {
-	ID   uint   `json:"id`
+	ID   uint64 `json:"id`
 	Nama string `json:"nama"`
 }
 type ResStatusTransaksi struct {
-	ID   uint   `json:"id`
+	ID   uint64 `json:"id`
 	Nama string `json:"nama"`
 }

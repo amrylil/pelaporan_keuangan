@@ -60,7 +60,7 @@ func (mdl *model) Insert(newTransaksi transaksi.Transaksi) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(transaksiID uint) (*transaksi.Transaksi, error) {
+func (mdl *model) SelectByID(transaksiID uint64) (*transaksi.Transaksi, error) {
 	var transaksi transaksi.Transaksi
 	err := mdl.db.Preload("TipeTransaksi").
 		Preload("StatusTransaksi").
@@ -80,7 +80,7 @@ func (mdl *model) SelectByID(transaksiID uint) (*transaksi.Transaksi, error) {
 	return &transaksi, nil
 }
 
-func (mdl *model) UpdatePartial(transaksiID uint, updates map[string]interface{}) error {
+func (mdl *model) UpdatePartial(transaksiID uint64, updates map[string]interface{}) error {
 	err := mdl.db.Model(&transaksi.Transaksi{}).
 		Where("id = ?", transaksiID).
 		Updates(updates).Error
@@ -158,7 +158,7 @@ func (mdl *model) Update(transaksi transaksi.Transaksi) error {
 	return nil
 }
 
-func (mdl *model) DeleteByID(transaksiID uint) error {
+func (mdl *model) DeleteByID(transaksiID uint64) error {
 	err := mdl.db.Delete(&transaksi.Transaksi{}, transaksiID).Error
 
 	if err != nil {
@@ -169,7 +169,7 @@ func (mdl *model) DeleteByID(transaksiID uint) error {
 	return nil
 }
 
-func (mdl *model) UpdateStatus(transaksiID uint, statusID int) error {
+func (mdl *model) UpdateStatus(transaksiID uint64, statusID int) error {
 	err := mdl.db.Model(&transaksi.Transaksi{}).
 		Where("id = ?", transaksiID).
 		Update("id_status_transaksi", statusID).Error

@@ -78,7 +78,7 @@ func (ctl *controller) StatusTransaksiDetails(c *gin.Context) {
 		return
 	}
 
-	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(uint(statusTransaksiID))
+	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(statusTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -160,7 +160,7 @@ func (ctl *controller) UpdateStatusTransaksi(c *gin.Context) {
 		return
 	}
 
-	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(uint(statusTransaksiID))
+	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(statusTransaksiID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -187,7 +187,7 @@ func (ctl *controller) UpdateStatusTransaksi(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.ModifyStatusTransaksi(input, uint(statusTransaksiID))
+	err = ctl.service.ModifyStatusTransaksi(input, statusTransaksiID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -220,7 +220,7 @@ func (ctl *controller) DeleteStatusTransaksi(c *gin.Context) {
 		return
 	}
 
-	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(uint(statusTransaksiID))
+	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(statusTransaksiID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -232,7 +232,7 @@ func (ctl *controller) DeleteStatusTransaksi(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.RemoveStatusTransaksi(uint(statusTransaksiID))
+	err = ctl.service.RemoveStatusTransaksi(statusTransaksiID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

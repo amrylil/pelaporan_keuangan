@@ -42,7 +42,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResKategori, int64, error) {
 	return kategoris, total, nil
 }
 
-func (svc *service) FindByID(kategoriID uint) (*dtos.ResKategori, error) {
+func (svc *service) FindByID(kategoriID uint64) (*dtos.ResKategori, error) {
 	res := dtos.ResKategori{}
 	kategori, err := svc.model.SelectByID(kategoriID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (svc *service) Create(newKategori dtos.InputKategori) error {
 	return nil
 }
 
-func (svc *service) Modify(kategoriData dtos.InputKategori, kategoriID uint) error {
+func (svc *service) Modify(kategoriData dtos.InputKategori, kategoriID uint64) error {
 	newKategori := kategori.Kategori{}
 
 	err := smapping.FillStruct(&newKategori, smapping.MapFields(kategoriData))
@@ -103,7 +103,7 @@ func (svc *service) Modify(kategoriData dtos.InputKategori, kategoriID uint) err
 	return nil
 }
 
-func (svc *service) Remove(kategoriID uint) error {
+func (svc *service) Remove(kategoriID uint64) error {
 	err := svc.model.DeleteByID(kategoriID)
 
 	if err != nil {

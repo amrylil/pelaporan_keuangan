@@ -49,7 +49,7 @@ func (mdl *model) Insert(newUsers users.Users) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(usersID uint) (*users.Users, error) {
+func (mdl *model) SelectByID(usersID uint64) (*users.Users, error) {
 	var users users.Users
 	err := mdl.db.First(&users, usersID).Error
 
@@ -71,7 +71,7 @@ func (mdl *model) Update(users users.Users) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(usersID uint) error {
+func (mdl *model) DeleteByID(usersID uint64) error {
 	err := mdl.db.Delete(&users.Users{}, usersID).Error
 
 	if err != nil {

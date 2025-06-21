@@ -9,17 +9,17 @@ import (
 type Repository interface {
 	GetAll(page, size int) ([]Placeholder, int64, error)
 	Insert(newPlaceholder Placeholder) error
-	SelectByID(placeholderID uint) (*Placeholder, error)
+	SelectByID(placeholderID uint64) (*Placeholder, error)
 	Update(placeholder Placeholder) error
-	DeleteByID(placeholderID uint) error
+	DeleteByID(placeholderID uint64) error
 }
 
 type Usecase interface {
 	FindAll(page, size int) ([]dtos.ResPlaceholder, int64, error)
-	FindByID(placeholderID uint) (*dtos.ResPlaceholder, error)
+	FindByID(placeholderID uint64) (*dtos.ResPlaceholder, error)
 	Create(newPlaceholder dtos.InputPlaceholder) error
-	Modify(placeholderData dtos.InputPlaceholder, placeholderID uint) error
-	Remove(placeholderID uint) error
+	Modify(placeholderData dtos.InputPlaceholder, placeholderID uint64) error
+	Remove(placeholderID uint64) error
 }
 
 type Handler interface {

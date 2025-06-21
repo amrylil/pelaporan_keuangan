@@ -67,7 +67,7 @@ func (ctl *controller) Log_auditDetails(c *gin.Context) {
 		return
 	}
 
-	log_audit, err := ctl.service.FindByID(uint(log_auditID))
+	log_audit, err := ctl.service.FindByID(log_auditID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -125,7 +125,7 @@ func (ctl *controller) UpdateLog_audit(c *gin.Context) {
 		return
 	}
 
-	log_audit, err := ctl.service.FindByID(uint(log_auditID))
+	log_audit, err := ctl.service.FindByID(log_auditID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -152,7 +152,7 @@ func (ctl *controller) UpdateLog_audit(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Modify(input, uint(log_auditID))
+	err = ctl.service.Modify(input, log_auditID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -173,7 +173,7 @@ func (ctl *controller) DeleteLog_audit(c *gin.Context) {
 		return
 	}
 
-	log_audit, err := ctl.service.FindByID(uint(log_auditID))
+	log_audit, err := ctl.service.FindByID(log_auditID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -185,7 +185,7 @@ func (ctl *controller) DeleteLog_audit(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(uint(log_auditID))
+	err = ctl.service.Remove(log_auditID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

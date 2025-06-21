@@ -43,7 +43,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResTransaksi, int64, error) 
 	return transaksis, total, nil
 }
 
-func (svc *service) FindByID(transaksiID uint) (*dtos.ResTransaksi, error) {
+func (svc *service) FindByID(transaksiID uint64) (*dtos.ResTransaksi, error) {
 	res := dtos.ResTransaksi{}
 	transaksi, err := svc.model.SelectByID(transaksiID)
 	if err != nil {
@@ -84,7 +84,7 @@ func (svc *service) Create(newTransaksi dtos.InputTransaksi) error {
 	return nil
 }
 
-func (svc *service) Modify(transaksiData dtos.InputTransaksi, transaksiID uint) error {
+func (svc *service) Modify(transaksiData dtos.InputTransaksi, transaksiID uint64) error {
 	newTransaksi := transaksi.Transaksi{}
 
 	err := smapping.FillStruct(&newTransaksi, smapping.MapFields(transaksiData))
@@ -104,7 +104,7 @@ func (svc *service) Modify(transaksiData dtos.InputTransaksi, transaksiID uint) 
 	return nil
 }
 
-func (svc *service) Remove(transaksiID uint) error {
+func (svc *service) Remove(transaksiID uint64) error {
 	err := svc.model.DeleteByID(transaksiID)
 
 	if err != nil {
@@ -115,7 +115,7 @@ func (svc *service) Remove(transaksiID uint) error {
 	return nil
 }
 
-func (svc *service) ModifyStatus(transaksiID uint, statusID int) error {
+func (svc *service) ModifyStatus(transaksiID uint64, statusID int) error {
 	if err := svc.model.UpdateStatus(transaksiID, statusID); err != nil {
 		log.Error(err.Error())
 		return err

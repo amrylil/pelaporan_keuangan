@@ -49,7 +49,7 @@ func (mdl *model) Insert(newLog_audit log_audit.Log_audit) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(log_auditID uint) (*log_audit.Log_audit, error) {
+func (mdl *model) SelectByID(log_auditID uint64) (*log_audit.Log_audit, error) {
 	var log_audit log_audit.Log_audit
 	err := mdl.db.First(&log_audit, log_auditID).Error
 
@@ -71,7 +71,7 @@ func (mdl *model) Update(log_audit log_audit.Log_audit) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(log_auditID uint) error {
+func (mdl *model) DeleteByID(log_auditID uint64) error {
 	err := mdl.db.Delete(&log_audit.Log_audit{}, log_auditID).Error
 
 	if err != nil {

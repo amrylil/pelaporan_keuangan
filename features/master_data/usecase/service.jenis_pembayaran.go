@@ -32,7 +32,7 @@ func (svc *service) FindAllJenisPembayaran(page, size int) ([]dtos.ResJenisPemba
 	return jenis_pembayarans, total, nil
 }
 
-func (svc *service) FindJenisPembayaranByID(jenisPembayaranID uint) (*dtos.ResJenisPembayaran, error) {
+func (svc *service) FindJenisPembayaranByID(jenisPembayaranID uint64) (*dtos.ResJenisPembayaran, error) {
 	res := dtos.ResJenisPembayaran{}
 	jenis_pembayaran, err := svc.model.SelectJenisPembayaranByID(jenisPembayaranID)
 	if err != nil {
@@ -73,7 +73,7 @@ func (svc *service) CreateJenisPembayaran(newJenisPembayaran dtos.InputJenisPemb
 	return nil
 }
 
-func (svc *service) ModifyJenisPembayaran(jenisPembayaran dtos.InputJenisPembayaran, jenisPembayaranID uint) error {
+func (svc *service) ModifyJenisPembayaran(jenisPembayaran dtos.InputJenisPembayaran, jenisPembayaranID uint64) error {
 	newJenisPembayaran := master_data.JenisPembayaran{}
 
 	err := smapping.FillStruct(&newJenisPembayaran, smapping.MapFields(jenisPembayaran))
@@ -93,7 +93,7 @@ func (svc *service) ModifyJenisPembayaran(jenisPembayaran dtos.InputJenisPembaya
 	return nil
 }
 
-func (svc *service) RemoveJenisPembayaran(jenisPembayaranID uint) error {
+func (svc *service) RemoveJenisPembayaran(jenisPembayaranID uint64) error {
 	err := svc.model.DeleteJenisPembayaranByID(jenisPembayaranID)
 
 	if err != nil {

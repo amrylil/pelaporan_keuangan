@@ -11,8 +11,10 @@ import (
 type Transaksi struct {
 	gorm.Model // ini akan menyertakan: ID, CreatedAt, UpdatedAt, DeletedAt
 
+	ID uint64 `gorm:"primaryKey"`
+
 	Tanggal           string  `gorm:"column:tanggal;type:date"`
-	IDTipeTransaksi   uint    `gorm:"column:id_tipe_transaksi"`
+	IDTipeTransaksi   uint64  `gorm:"column:id_tipe_transaksi"`
 	Jumlah            float64 `gorm:"column:jumlah"`
 	Keterangan        string  `gorm:"column:keterangan;type:text"`
 	BuktiTransaksi    string  `gorm:"column:bukti_transaksi"`

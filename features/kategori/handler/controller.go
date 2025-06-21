@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"pelaporan_keuangan/features/kategori"
 	"pelaporan_keuangan/features/kategori/dtos"
@@ -62,7 +63,7 @@ func (ctl *controller) KategoriDetails(c *gin.Context) {
 		return
 	}
 
-	kategori, err := ctl.service.FindByID(uint(kategoriID))
+	kategori, err := ctl.service.FindByID(kategoriID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -114,12 +115,15 @@ func (ctl *controller) CreateKategori(c *gin.Context) {
 
 func (ctl *controller) UpdateKategori(c *gin.Context) {
 	var input dtos.InputKategori
-	kategoriID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+
+	log.Print("id sebelum parse : ", c.Param("id"))
+	kategoriID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("ID kategori tidak valid"))
 		return
 	}
-	_, err = ctl.service.FindByID(uint(kategoriID))
+	log.Print("setelah : ", kategoriID)
+	_, err = ctl.service.FindByID(kategoriID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Kategori dengan ID tersebut tidak ditemukan"))
 		return
@@ -139,8 +143,7 @@ func (ctl *controller) UpdateKategori(c *gin.Context) {
 		return
 	}
 
-	// Panggil service untuk melakukan modifikasi
-	err = ctl.service.Modify(input, uint(kategoriID))
+	err = ctl.service.Modify(input, kategoriID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse("Gagal mengupdate kategori"))
 		return
@@ -159,7 +162,7 @@ func (ctl *controller) DeleteKategori(c *gin.Context) {
 		return
 	}
 
-	kategori, err := ctl.service.FindByID(uint(kategoriID))
+	kategori, err := ctl.service.FindByID(kategoriID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -171,7 +174,7 @@ func (ctl *controller) DeleteKategori(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(uint(kategoriID))
+	err = ctl.service.Remove(kategoriID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))

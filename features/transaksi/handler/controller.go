@@ -92,7 +92,7 @@ func (ctl *controller) TransaksiDetails(c *gin.Context) {
 		return
 	}
 
-	transaksi, err := ctl.service.FindByID(uint(transaksiID))
+	transaksi, err := ctl.service.FindByID(transaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -174,7 +174,7 @@ func (ctl *controller) UpdateTransaksi(c *gin.Context) {
 	}
 
 	// Check if transaction exists
-	existingTransaksi, err := ctl.service.FindByID(uint(transaksiID))
+	existingTransaksi, err := ctl.service.FindByID(transaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
@@ -192,7 +192,7 @@ func (ctl *controller) UpdateTransaksi(c *gin.Context) {
 	}
 
 	// Set the ID for update
-	id := uint(transaksiID)
+	id := transaksiID
 	input.ID = &id
 
 	// Validate the input
@@ -237,7 +237,7 @@ func (ctl *controller) DeleteTransaksi(c *gin.Context) {
 		return
 	}
 
-	transaksi, err := ctl.service.FindByID(uint(transaksiID))
+	transaksi, err := ctl.service.FindByID(transaksiID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
@@ -249,7 +249,7 @@ func (ctl *controller) DeleteTransaksi(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.Remove(uint(transaksiID))
+	err = ctl.service.Remove(transaksiID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -282,7 +282,7 @@ func (ctl *controller) UpdateTransaksiStatus(c *gin.Context) {
 	}
 
 	var input struct {
-		StatusID uint `json:"status_id" validate:"required"`
+		StatusID uint64 `json:"status_id" validate:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -295,7 +295,7 @@ func (ctl *controller) UpdateTransaksiStatus(c *gin.Context) {
 		return
 	}
 
-	err = ctl.service.ModifyStatus(uint(transaksiID), int(input.StatusID))
+	err = ctl.service.ModifyStatus(transaksiID, int(input.StatusID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return

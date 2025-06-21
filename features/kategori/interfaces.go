@@ -9,17 +9,17 @@ import (
 type Repository interface {
 	GetAll(page, size int) ([]Kategori, int64, error)
 	Insert(newKategori Kategori) error
-	SelectByID(kategoriID uint) (*Kategori, error)
+	SelectByID(kategoriID uint64) (*Kategori, error)
 	Update(kategori Kategori) error
-	DeleteByID(kategoriID uint) error
+	DeleteByID(kategoriID uint64) error
 }
 
 type Usecase interface {
 	FindAll(page, size int) ([]dtos.ResKategori, int64, error)
-	FindByID(kategoriID uint) (*dtos.ResKategori, error)
+	FindByID(kategoriID uint64) (*dtos.ResKategori, error)
 	Create(newKategori dtos.InputKategori) error
-	Modify(kategoriData dtos.InputKategori, kategoriID uint) error
-	Remove(kategoriID uint) error
+	Modify(kategoriData dtos.InputKategori, kategoriID uint64) error
+	Remove(kategoriID uint64) error
 }
 
 type Handler interface {

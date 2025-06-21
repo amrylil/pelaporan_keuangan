@@ -42,7 +42,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResLog_audit, int64, error) 
 	return log_audits, total, nil
 }
 
-func (svc *service) FindByID(log_auditID uint) (*dtos.ResLog_audit, error) {
+func (svc *service) FindByID(log_auditID uint64) (*dtos.ResLog_audit, error) {
 	res := dtos.ResLog_audit{}
 	log_audit, err := svc.model.SelectByID(log_auditID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (svc *service) Create(newLog_audit dtos.InputLog_audit) error {
 	return nil
 }
 
-func (svc *service) Modify(log_auditData dtos.InputLog_audit, log_auditID uint) error {
+func (svc *service) Modify(log_auditData dtos.InputLog_audit, log_auditID uint64) error {
 	newLog_audit := log_audit.Log_audit{}
 
 	err := smapping.FillStruct(&newLog_audit, smapping.MapFields(log_auditData))
@@ -103,7 +103,7 @@ func (svc *service) Modify(log_auditData dtos.InputLog_audit, log_auditID uint) 
 	return nil
 }
 
-func (svc *service) Remove(log_auditID uint) error {
+func (svc *service) Remove(log_auditID uint64) error {
 	err := svc.model.DeleteByID(log_auditID)
 
 	if err != nil {
