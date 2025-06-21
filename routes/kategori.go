@@ -7,7 +7,7 @@ import (
 )
 
 func Kategori(r *gin.Engine, handler kategori.Handler) {
-	kategori := r.Group("/kategori")
+	kategori := r.Group("/api/v1/master-data/kategori")
 
 	kategori.GET("", handler.GetKategori)
 	kategori.POST("", handler.CreateKategori)

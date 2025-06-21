@@ -7,8 +7,9 @@ import (
 type Kategori struct {
 	gorm.Model
 
-	ID   uint   `gorm:"primaryKey"`
-	Name string `gorm:"type:varchar(255)"`
+	ID        uint    `gorm:"primaryKey"`
+	Name      string  `gorm:"type:varchar(255);not null"`
+	Deskripsi *string `gorm:"type:text"`
 }
 
 func (Kategori) TableName() string {

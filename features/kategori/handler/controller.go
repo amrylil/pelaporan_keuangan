@@ -25,7 +25,7 @@ var validate *validator.Validate
 
 func (ctl *controller) GetKategori(c *gin.Context) {
 	var pagination dtos.Pagination
-	if err := c.ShouldBindJSON(&pagination); err != nil {
+	if err := c.ShouldBindQuery(&pagination); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))
 		return
 	}
@@ -41,11 +41,6 @@ func (ctl *controller) GetKategori(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
-		return
-	}
-
-	if kategoris == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is No Kategoris!"))
 		return
 	}
 
@@ -119,52 +114,43 @@ func (ctl *controller) CreateKategori(c *gin.Context) {
 
 func (ctl *controller) UpdateKategori(c *gin.Context) {
 	var input dtos.InputKategori
-	kategoriID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	kategoriID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("ID kategori tidak valid"))
 		return
 	}
-
-	kategori, err := ctl.service.FindByID(uint(kategoriID))
+	_, err = ctl.service.FindByID(uint(kategoriID))
 	if err != nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Kategori dengan ID tersebut tidak ditemukan"))
 		return
 	}
-
-	if kategori == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Kategori Not Found!"))
-		return
-	}
-
 	if err = c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request!"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Request body tidak valid"))
 		return
 	}
-
-	validate = validator.New()
+	validate := validator.New()
 	err = validate.Struct(input)
 
 	if err != nil {
 		errMap := helpers.ErrorMapValidation(err)
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Bad Request!", gin.H{
-			"error": errMap,
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Input tidak valid!", gin.H{
+			"errors": errMap,
 		}))
 		return
 	}
 
+	// Panggil service untuk melakukan modifikasi
 	err = ctl.service.Modify(input, uint(kategoriID))
-
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse("Gagal mengupdate kategori"))
 		return
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Update Kategori Success",
+		Message: "Update Kategori Success",
 		Status:  true,
 	})
 }
-
 func (ctl *controller) DeleteKategori(c *gin.Context) {
 	kategoriID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 

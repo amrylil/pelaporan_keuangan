@@ -1,5 +1,7 @@
 package dtos
 
 type ResKategori struct {
-	Name string `json:"name"`
+	ID        uint   `json:"id"`
+	Name      string `json:"name"`
+	Deskripsi string `json:"deskripsi,omitempty"`
 }

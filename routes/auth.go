@@ -7,7 +7,7 @@ import (
 )
 
 func Auth(r *gin.Engine, handler auth.Handler) {
-	auth := r.Group("/auth")
+	auth := r.Group("/api/v1/auth")
 
 	auth.GET("", handler.GetAuth)
 	auth.POST("", handler.CreateAuth)

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"pelaporan_keuangan/config"
+	"pelaporan_keuangan/features/kategori"
 	"pelaporan_keuangan/features/master_data"
 	"pelaporan_keuangan/features/transaksi"
 	"pelaporan_keuangan/features/users"
@@ -21,6 +22,10 @@ import (
 	th "pelaporan_keuangan/features/transaksi/handler"
 	tr "pelaporan_keuangan/features/transaksi/repository"
 	tu "pelaporan_keuangan/features/transaksi/usecase"
+
+	kh "pelaporan_keuangan/features/kategori/handler"
+	kr "pelaporan_keuangan/features/kategori/repository"
+	ku "pelaporan_keuangan/features/kategori/usecase"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -77,6 +82,7 @@ func main() {
 	routes.Users(r, UsersHandler(db))
 	routes.Transaksi(r, TransaksiHandler(db))
 	routes.Master_data(r, MasterDataHandler(db))
+	routes.Kategori(r, KategoriHandler(db))
 	log.Println("Routes setup complete")
 
 	// Root endpoint
@@ -123,4 +129,9 @@ func MasterDataHandler(db *gorm.DB) master_data.Handler {
 	repo := mr.New(db)
 	usecase := mu.New(repo)
 	return mh.New(usecase)
+}
+func KategoriHandler(db *gorm.DB) kategori.Handler {
+	repo := kr.New(db)
+	usecase := ku.New(repo)
+	return kh.New(usecase)
 }

@@ -69,7 +69,7 @@ func (svc *service) Create(newKategori dtos.InputKategori) error {
 	err := smapping.FillStruct(&kategori, smapping.MapFields(newKategori))
 	if err != nil {
 		log.Error(err.Error())
-		return nil
+		return err
 	}
 
 	kategori.ID = helpers.GenerateID()
