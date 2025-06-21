@@ -13,20 +13,23 @@ type Master_data struct {
 type JenisPembayaran struct {
 	gorm.Model
 
-	ID   uint64 `gorm:"primaryKey"`
-	Nama string `gorm:"type:varchar(255)"`
+	ID        uint64  `gorm:"primaryKey"`
+	Name      string  `gorm:"type:varchar(255)"`
+	Deskripsi *string `gorm:"type:text"`
 }
 type TipeTransaksi struct {
 	gorm.Model
 
-	ID   uint64 `gorm:"primaryKey"`
-	Nama string `gorm:"type:varchar(255)"`
+	ID        uint64  `gorm:"primaryKey"`
+	Name      string  `gorm:"type:varchar(255)"`
+	Deskripsi *string `gorm:"type:text"`
 }
 type StatusTransaksi struct {
 	gorm.Model
 
-	ID   uint64 `gorm:"primaryKey"`
-	Nama string `gorm:"type:varchar(255)"`
+	ID        uint64  `gorm:"primaryKey"`
+	Name      string  `gorm:"type:varchar(255)"`
+	Deskripsi *string `gorm:"type:text"`
 }
 
 func (Master_data) TableName() string {

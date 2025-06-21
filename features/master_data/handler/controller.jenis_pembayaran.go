@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"pelaporan_keuangan/features/master_data/dtos"
 	"pelaporan_keuangan/helpers"
@@ -41,11 +42,6 @@ func (ctl *controller) GetJenisPembayaran(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
-		return
-	}
-
-	if JenisPembayarans == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is No JenisPembayarans!"))
 		return
 	}
 
@@ -155,7 +151,10 @@ func (ctl *controller) CreateJenisPembayaran(c *gin.Context) {
 // @Router /jenis-pembayaran/{id} [put]
 func (ctl *controller) UpdateJenisPembayaran(c *gin.Context) {
 	var input dtos.InputJenisPembayaran
+
+	log.Print("id sebelum parse : ", c.Param("id"))
 	JenisPembayaranID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	log.Print(JenisPembayaranID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
 		return

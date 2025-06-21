@@ -5,14 +5,17 @@ type InputMaster_data struct {
 }
 
 type InputJenisPembayaran struct {
-	Nama string `json:"nama" form:"nama" validate:"required"`
+	Name      string  `json:"name" form:"name" validate:"required"`
+	Deskripsi *string `json:"deskripsi" form:"deskripsi"`
 }
 
 type InputTipeTransaksi struct {
-	Nama string `json:"nama" form:"name" validate:"required"`
+	Name      string  `json:"name" form:"name" validate:"required"`
+	Deskripsi *string `json:"deskripsi" form:"deskripsi"`
 }
 type InputStatusTransaksi struct {
-	Nama string `json:"nama" form:"name" validate:"required"`
+	Name      string  `json:"name" form:"name" validate:"required"`
+	Deskripsi *string `json:"deskripsi" form:"deskripsi"`
 }
 
 type Pagination struct {

@@ -7,7 +7,7 @@ import (
 )
 
 func Master_data(r *gin.Engine, handler master_data.Handler) {
-	masterData := r.Group("/api/v1/master_data")
+	masterData := r.Group("/api/v1/master-data")
 
 	// Jenis Pembayaran
 	masterData.GET("/jenis-pembayaran", handler.GetJenisPembayaran)
