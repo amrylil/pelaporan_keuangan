@@ -57,11 +57,6 @@ func (ctl *controller) GetTransaksi(c *gin.Context) {
 		return
 	}
 
-	if transaksis == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is No Transaksis!"))
-		return
-	}
-
 	paginationData := helpers.PaginationResponse(page, pageSize, int(total))
 
 	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{

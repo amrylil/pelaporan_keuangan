@@ -1,7 +1,8 @@
 package repository
 
 import (
-	"pelaporan_keuangan/features/auth"
+	"errors"
+	user "pelaporan_keuangan/features/auth"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
@@ -11,35 +12,57 @@ type model struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) auth.Repository {
+func New(db *gorm.DB) user.Repository {
 	return &model{
 		db: db,
 	}
 }
 
-func (mdl *model) GetAll(page, size int) ([]auth.Auth, int64, error) {
-	var auths []auth.Auth
+func (mdl *model) GetAll(page, size int) ([]user.User, int64, error) {
+	var users []user.User
 	var total int64
 
-	if err := mdl.db.Model(&auths).
+	if err := mdl.db.Model(&users).
 		Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	offset := (page - 1) * size
 
-	err := mdl.db.Offset(offset).Limit(size).Find(&auths).Error
+	err := mdl.db.Offset(offset).Limit(size).Find(&users).Error
 
 	if err != nil {
 		log.Error(err)
 		return nil, 0, err
 	}
 
-	return auths, total, nil
+	return users, total, nil
 }
 
-func (mdl *model) Insert(newAuth auth.Auth) error {
-	err := mdl.db.Create(&newAuth).Error
+func (mdl *model) CheckEmailExist(email string) error {
+	var user user.User
+	result := mdl.db.Where("email = ?", email).First(&user)
+
+	if result.RowsAffected > 0 {
+		return errors.New("email already exists")
+	}
+
+	return nil
+}
+
+func (mdl *model) GetUserByEmail(email string) (*user.User, error) {
+	var user user.User
+	result := mdl.db.Where("email = ?", email).First(&user)
+
+	if result.Error != nil {
+		return nil, errors.New("user not found")
+	}
+
+	return &user, nil
+}
+
+func (mdl *model) Insert(newUser user.User) error {
+	err := mdl.db.Create(&newUser).Error
 
 	if err != nil {
 		log.Error(err)
@@ -49,20 +72,20 @@ func (mdl *model) Insert(newAuth auth.Auth) error {
 	return nil
 }
 
-func (mdl *model) SelectByID(authID uint64) (*auth.Auth, error) {
-	var auth auth.Auth
-	err := mdl.db.First(&auth, authID).Error
+func (mdl *model) SelectByID(userID uint64) (*user.User, error) {
+	var user user.User
+	err := mdl.db.First(&user, userID).Error
 
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
-	return &auth, nil
+	return &user, nil
 }
 
-func (mdl *model) Update(auth auth.Auth) error {
-	err := mdl.db.Updates(&auth).Error
+func (mdl *model) Update(user user.User) error {
+	err := mdl.db.Updates(&user).Error
 
 	if err != nil {
 		log.Error(err)
@@ -71,8 +94,8 @@ func (mdl *model) Update(auth auth.Auth) error {
 	return err
 }
 
-func (mdl *model) DeleteByID(authID uint64) error {
-	err := mdl.db.Delete(&auth.Auth{}, authID).Error
+func (mdl *model) DeleteByID(userID uint64) error {
+	err := mdl.db.Delete(&user.User{}, userID).Error
 
 	if err != nil {
 		log.Error(err)

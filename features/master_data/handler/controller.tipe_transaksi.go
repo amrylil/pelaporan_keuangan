@@ -24,7 +24,7 @@ import (
 // @Router /tipe-transaksi [post]
 func (ctl *controller) GetTipeTransaksi(c *gin.Context) {
 	var pagination dtos.Pagination
-	if err := c.ShouldBindJSON(&pagination); err != nil {
+	if err := c.ShouldBindQuery(&pagination); err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))
 		return
 	}
@@ -39,11 +39,6 @@ func (ctl *controller) GetTipeTransaksi(c *gin.Context) {
 	tipeTransaksis, total, err := ctl.service.FindAllTipeTransaksi(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
-		return
-	}
-
-	if tipeTransaksis == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is no TipeTransaksi data!"))
 		return
 	}
 

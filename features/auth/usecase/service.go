@@ -1,60 +1,69 @@
 package usecase
 
 import (
-	"pelaporan_keuangan/features/auth"
+	"errors"
+	user "pelaporan_keuangan/features/auth"
 	"pelaporan_keuangan/features/auth/dtos"
 	"pelaporan_keuangan/helpers"
+	"strconv"
+	"time"
 
 	"github.com/labstack/gommon/log"
 	"github.com/mashingan/smapping"
 )
 
 type service struct {
-	model auth.Repository
+	model     user.Repository
+	hash      helpers.HashInterface
+	validator helpers.ValidationInterface
+	jwt       helpers.JWTInterface
 }
 
-func New(model auth.Repository) auth.Usecase {
+func New(model user.Repository, hash helpers.HashInterface, validator helpers.ValidationInterface, jwt helpers.JWTInterface) user.Usecase {
 	return &service{
-		model: model,
+		model:     model,
+		hash:      hash,
+		validator: validator,
+		jwt:       jwt,
 	}
 }
 
-func (svc *service) FindAll(page, size int) ([]dtos.ResAuth, int64, error) {
-	var auths []dtos.ResAuth
+func (svc *service) FindAll(page, size int) ([]dtos.ResUser, int64, error) {
+	var users []dtos.ResUser
 
-	authsEnt, total, err := svc.model.GetAll(page, size)
+	usersEnt, total, err := svc.model.GetAll(page, size)
 	if err != nil {
 		log.Error(err.Error())
 		return nil, 0, err
 	}
 
-	for _, auth := range authsEnt {
-		var data dtos.ResAuth
+	for _, user := range usersEnt {
+		var data dtos.ResUser
 
-		if err := smapping.FillStruct(&data, smapping.MapFields(auth)); err != nil {
+		if err := smapping.FillStruct(&data, smapping.MapFields(user)); err != nil {
 			log.Error(err.Error())
 			return nil, 0, err
 		}
 
-		auths = append(auths, data)
+		users = append(users, data)
 	}
 
-	return auths, total, nil
+	return users, total, nil
 }
 
-func (svc *service) FindByID(authID uint64) (*dtos.ResAuth, error) {
-	res := dtos.ResAuth{}
-	auth, err := svc.model.SelectByID(authID)
+func (svc *service) FindByID(userID uint64) (*dtos.ResUser, error) {
+	res := dtos.ResUser{}
+	user, err := svc.model.SelectByID(userID)
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
 
-	if auth == nil {
+	if user == nil {
 		return nil, nil
 	}
 
-	err = smapping.FillStruct(&res, smapping.MapFields(auth))
+	err = smapping.FillStruct(&res, smapping.MapFields(user))
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
@@ -63,17 +72,22 @@ func (svc *service) FindByID(authID uint64) (*dtos.ResAuth, error) {
 	return &res, nil
 }
 
-func (svc *service) Create(newAuth dtos.InputAuth) error {
-	auth := auth.Auth{}
+func (svc *service) Create(newUser dtos.InputUser) error {
+	user := user.User{}
 
-	err := smapping.FillStruct(&auth, smapping.MapFields(newAuth))
+	err := smapping.FillStruct(&user, smapping.MapFields(newUser))
 	if err != nil {
 		log.Error(err.Error())
 		return nil
 	}
 
-	auth.ID = helpers.GenerateID()
-	err = svc.model.Insert(auth)
+	user.ID = helpers.GenerateID()
+	user.Password = svc.hash.HashPassword(newUser.Password)
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
+	user.IsActive = true
+	user.UserType = 1
+	err = svc.model.Insert(user)
 
 	if err != nil {
 		log.Error(err.Error())
@@ -83,17 +97,43 @@ func (svc *service) Create(newAuth dtos.InputAuth) error {
 	return nil
 }
 
-func (svc *service) Modify(authData dtos.InputAuth, authID uint64) error {
-	newAuth := auth.Auth{}
+func (svc *service) Login(user dtos.LoginRequest) (*dtos.ResUser, error) {
+	errMap, err := svc.validator.ValidateRequest(user)
+	if errMap != nil {
+		log.Error(errMap)
+		return nil, err
+	}
 
-	err := smapping.FillStruct(&newAuth, smapping.MapFields(authData))
+	userData, err := svc.model.GetUserByEmail(user.Email)
+	if err != nil {
+		log.Error(err)
+	}
+	if !svc.hash.CompareHash(user.Password, userData.Password) {
+		return nil, errors.New("invalid Password")
+	}
+
+	resUser := dtos.ResUser{}
+	userType := strconv.Itoa(userData.UserType)
+	tokenData := svc.jwt.GenerateJWT(strconv.FormatUint(uint64(userData.ID), 10), userType)
+	resUser.AccessToken = tokenData["access_token"].(string)
+	resUser.UserType = userType
+	resUser.Name = userData.Name
+	resUser.RefreshToken = tokenData["refresh_token"].(string)
+	return &resUser, nil
+
+}
+
+func (svc *service) Modify(userData dtos.InputUser, userID uint64) error {
+	newUser := user.User{}
+
+	err := smapping.FillStruct(&newUser, smapping.MapFields(userData))
 	if err != nil {
 		log.Error(err.Error())
 		return err
 	}
 
-	newAuth.ID = authID
-	err = svc.model.Update(newAuth)
+	newUser.ID = userID
+	err = svc.model.Update(newUser)
 
 	if err != nil {
 		log.Error(err.Error())
@@ -103,8 +143,8 @@ func (svc *service) Modify(authData dtos.InputAuth, authID uint64) error {
 	return nil
 }
 
-func (svc *service) Remove(authID uint64) error {
-	err := svc.model.DeleteByID(authID)
+func (svc *service) Remove(userID uint64) error {
+	err := svc.model.DeleteByID(userID)
 
 	if err != nil {
 		log.Error(err.Error())

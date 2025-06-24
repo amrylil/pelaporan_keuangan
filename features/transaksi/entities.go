@@ -9,7 +9,7 @@ import (
 )
 
 type Transaksi struct {
-	gorm.Model // ini akan menyertakan: ID, CreatedAt, UpdatedAt, DeletedAt
+	gorm.Model
 
 	ID uint64 `gorm:"primaryKey"`
 
@@ -24,7 +24,6 @@ type Transaksi struct {
 	IDUser            uint    `gorm:"column:id_user"`
 	IDJenisPembayaran uint    `gorm:"column:id_jenis_pembayaran"`
 
-	// Relasi opsional
 	TipeTransaksi   master_data.TipeTransaksi   `gorm:"foreignKey:IDTipeTransaksi"`
 	StatusTransaksi master_data.StatusTransaksi `gorm:"foreignKey:IDStatusTransaksi"`
 	Kategori        kategori.Kategori           `gorm:"foreignKey:IDKategori"`

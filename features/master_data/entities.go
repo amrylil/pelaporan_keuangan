@@ -39,8 +39,8 @@ func (JenisPembayaran) TableName() string {
 	return "jenis_pembayaran"
 }
 func (StatusTransaksi) TableName() string {
-	return "status_pembayaran"
+	return "status_transaksi"
 }
 func (TipeTransaksi) TableName() string {
-	return "tipe_pembayaran"
+	return "tipe_transaksi"
 }

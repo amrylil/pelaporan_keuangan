@@ -32,6 +32,8 @@ func InitConfig() *ProgramConfig {
 
 type ProgramConfig struct {
 	SERVER_PORT string
+	SECRET      string
+	REFSECRET   string
 }
 
 func LoadDBConfig() *DatabaseConfig {
@@ -73,5 +75,54 @@ func loadConfig() *ProgramConfig {
 	if val, found := os.LookupEnv("SERVER_PORT"); found {
 		res.SERVER_PORT = val
 	}
+	if val, found := os.LookupEnv("SECRET"); found {
+		res.SECRET = val
+	}
+	if val, found := os.LookupEnv("REFSECRET"); found {
+		res.REFSECRET = val
+	}
+	return res
+}
+
+type AWSConfig struct {
+	AccessKeyID     string
+	AccessKeySecret string
+	Region          string
+	S3Bucket        string
+}
+
+func LoadAwsConfig() *AWSConfig {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Printf("❌ Error loading .env file: %v", err)
+	} else {
+		log.Println("✅ .env file loaded successfully")
+	}
+
+	var res = new(AWSConfig)
+	if val, found := os.LookupEnv("AWS_ACCESS_KEY_ID"); found {
+		res.AccessKeyID = val
+	} else {
+		log.Println("❌ AWS_ACCESS_KEY_ID is missing")
+	}
+
+	if val, found := os.LookupEnv("AWS_SECRET_ACCESS_KEY"); found {
+		res.AccessKeySecret = val
+	} else {
+		log.Println("❌ AWS_ACCESS_KEY_SECRET is missing")
+	}
+
+	if val, found := os.LookupEnv("AWS_REGION"); found {
+		res.Region = val
+	} else {
+		log.Println("❌ AWS_REGION is missing")
+	}
+
+	if val, found := os.LookupEnv("S3_BUCKET"); found {
+		res.S3Bucket = val
+	} else {
+		log.Println("⚠️ S3_BUCKET is missing (optional)")
+	}
+
 	return res
 }
