@@ -7,25 +7,33 @@ import (
 )
 
 type Repository interface {
-	GetAll(page, size int) ([]Users, int64, error)
-	Insert(newUsers Users) error
-	SelectByID(usersID uint64) (*Users, error)
-	Update(users Users) error
-	DeleteByID(usersID uint64) error
+	GetAll(page, size int) ([]User, int64, error)
+	Insert(newUser User) error
+	SelectByID(userID uint64) (*User, error)
+	CheckEmailExist(email string) error
+	GetUserByEmail(email string) (*User, error)
+	Update(user User) error
+	DeleteByID(userID uint64) error
+
+	// auth
 }
 
 type Usecase interface {
-	FindAll(page, size int) ([]dtos.ResUsers, int64, error)
-	FindByID(usersID uint64) (*dtos.ResUsers, error)
-	Create(newUsers dtos.InputUsers) error
-	Modify(usersData dtos.InputUsers, usersID uint64) error
-	Remove(usersID uint64) error
+	FindAll(page, size int) ([]dtos.ResUser, int64, error)
+	FindByID(userID uint64) (*dtos.ResUser, error)
+	Create(newUser dtos.InputUser) error
+	Modify(userData dtos.InputUser, userID uint64) error
+	Remove(userID uint64) error
+
+	Login(user dtos.LoginRequest) (*dtos.ResUser, error)
 }
 
 type Handler interface {
 	GetUsers(c *gin.Context)
-	UsersDetails(c *gin.Context)
-	CreateUsers(c *gin.Context)
-	UpdateUsers(c *gin.Context)
-	DeleteUsers(c *gin.Context)
+	UserDetails(c *gin.Context)
+	CreateUser(c *gin.Context)
+	UpdateUser(c *gin.Context)
+	DeleteUser(c *gin.Context)
+
+	Login(c *gin.Context)
 }

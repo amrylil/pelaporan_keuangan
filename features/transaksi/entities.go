@@ -27,7 +27,7 @@ type Transaksi struct {
 	TipeTransaksi   master_data.TipeTransaksi   `gorm:"foreignKey:IDTipeTransaksi"`
 	StatusTransaksi master_data.StatusTransaksi `gorm:"foreignKey:IDStatusTransaksi"`
 	Kategori        kategori.Kategori           `gorm:"foreignKey:IDKategori"`
-	User            users.Users                 `gorm:"foreignKey:IDUser"`
+	User            users.User                  `gorm:"foreignKey:IDUser"`
 	JenisPembayaran master_data.JenisPembayaran `gorm:"foreignKey:IDJenisPembayaran"`
 }
 

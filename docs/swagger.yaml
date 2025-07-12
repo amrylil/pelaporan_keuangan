@@ -2,24 +2,30 @@ basePath: /api/v1
 definitions:
   dtos.InputJenisPembayaran:
     properties:
-      nama:
+      deskripsi:
+        type: string
+      name:
         type: string
     required:
-    - nama
+    - name
     type: object
   dtos.InputStatusTransaksi:
     properties:
-      nama:
+      deskripsi:
+        type: string
+      name:
         type: string
     required:
-    - nama
+    - name
     type: object
   dtos.InputTipeTransaksi:
     properties:
-      nama:
+      deskripsi:
+        type: string
+      name:
         type: string
     required:
-    - nama
+    - name
     type: object
   dtos.InputTransaksi:
     properties:
@@ -50,25 +56,63 @@ definitions:
     - nama_transaksi
     - tanggal
     type: object
+  dtos.InputUser:
+    properties:
+      email:
+        example: john@example.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+      password:
+        example: password123
+        minLength: 6
+        type: string
+      user_type:
+        example: 1
+        type: integer
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dtos.LoginRequest:
+    properties:
+      email:
+        example: john@example.com
+        type: string
+      password:
+        example: password123
+        type: string
+    required:
+    - email
+    - password
+    type: object
   dtos.ResJenisPembayaran:
     properties:
+      deskripsi:
+        type: string
       id:
         type: integer
-      nama:
+      name:
         type: string
     type: object
   dtos.ResStatusTransaksi:
     properties:
+      deskripsi:
+        type: string
       id:
         type: integer
-      nama:
+      name:
         type: string
     type: object
   dtos.ResTipeTransaksi:
     properties:
+      deskripsi:
+        type: string
       id:
         type: integer
-      nama:
+      name:
         type: string
     type: object
   dtos.ResTransaksi:
@@ -148,6 +192,16 @@ definitions:
         example: 10
         type: integer
     type: object
+  helpers.ResponseAuth:
+    properties:
+      data: {}
+      message:
+        example: error message
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
   helpers.ResponseCUDSuccess:
     properties:
       message:
@@ -210,6 +264,36 @@ info:
   title: Pelaporan Keuangan API
   version: "1.0"
 paths:
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided information
+      parameters:
+      - description: User information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Create a new user
+      tags:
+      - authentication
   /jenis-pembayaran:
     get:
       consumes:
@@ -895,6 +979,177 @@ paths:
       summary: Update transaction status
       tags:
       - Transaksi
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all users in the system
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Items per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.ResponseGetAllSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get all users with pagination
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed information about a specific user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.ResponseGetDetailSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Get user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user information by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated user information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InputUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.ResponseCUDSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: Update an existing user
+      tags:
+      - users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with email/username and password
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.ResponseAuth'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.ResponseError'
+      summary: User login
+      tags:
+      - authentication
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

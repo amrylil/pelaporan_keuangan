@@ -10,7 +10,7 @@ import (
 
 // Claims defines the data stored in JWT token
 type Claims struct {
-	userID uint6464 `json:"user_id"`
+	UserID uint64   `json:"user_id"`
 	Email  string   `json:"email"`
 	Roles  []string `json:"roles"`
 	jwt.StandardClaims
@@ -33,7 +33,7 @@ func NewManager(secretKey string, tokenExpiry, refreshExpiry time.Duration) *Man
 }
 
 // GenerateToken creates a new JWT token
-func (m *Manager) GenerateToken(userID uint6464, email string, roles []string) (string, error) {
+func (m *Manager) GenerateToken(userID uint64, email string, roles []string) (string, error) {
 	claims := Claims{
 		UserID: userID,
 		Email:  email,
@@ -54,7 +54,7 @@ func (m *Manager) GenerateToken(userID uint6464, email string, roles []string) (
 }
 
 // GenerateRefreshToken creates a new refresh token
-func (m *Manager) GenerateRefreshToken(userID uint6464) (string, error) {
+func (m *Manager) GenerateRefreshToken(userID uint64) (string, error) {
 	claims := jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(m.refreshExpiry).Unix(),
 		IssuedAt:  time.Now().Unix(),
@@ -106,7 +106,7 @@ func (m *Manager) ValidateRefreshToken(tokenString string) (uint64, error) {
 
 	if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
 		// Parse user ID from subject
-		var userID uint6464
+		var userID uint64
 		_, err := fmt.Sscanf(claims.Subject, "%d", &userID)
 		if err != nil {
 			return 0, errors.New("invalid subject in refresh token")

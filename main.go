@@ -12,8 +12,11 @@ import (
 	"pelaporan_keuangan/features/users/handler"
 	"pelaporan_keuangan/features/users/repository"
 	"pelaporan_keuangan/features/users/usecase"
+	"pelaporan_keuangan/helpers"
 	"pelaporan_keuangan/routes"
 	"pelaporan_keuangan/utils"
+
+	"github.com/gin-contrib/cors"
 
 	mh "pelaporan_keuangan/features/master_data/handler"
 	mr "pelaporan_keuangan/features/master_data/repository"
@@ -67,7 +70,7 @@ func main() {
 	log.Println("Database initialized")
 
 	err := db.AutoMigrate(
-		&users.Users{},
+		&users.User{},
 		&transaksi.Transaksi{},
 		&master_data.JenisPembayaran{},
 		&master_data.StatusTransaksi{},
@@ -78,30 +81,27 @@ func main() {
 	}
 	log.Println("Migration success")
 
-	// Setup routes
+	config := cors.DefaultConfig()
+
+	config.AllowOrigins = []string{"*"}
+
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
+
+	r.Use(cors.New(config))
 	routes.Users(r, UsersHandler(db))
 	routes.Transaksi(r, TransaksiHandler(db))
 	routes.Master_data(r, MasterDataHandler(db))
 	routes.Kategori(r, KategoriHandler(db))
+	routes.Auth(r, UsersHandler(db))
 	log.Println("Routes setup complete")
 
-	// Root endpoint
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "Pelaporan Keuangan API is running! 😍")
 	})
 
-	// Health check endpoint
-	r.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
-			"message": "Pelaporan Keuangan API is healthy",
-		})
-	})
-
-	// Swagger endpoint - TAMBAHAN INI
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Alternative swagger route (optional)
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	log.Println("Swagger UI available at: http://localhost:" + cfg.SERVER_PORT + "/swagger/index.html")
@@ -114,8 +114,13 @@ func main() {
 }
 
 func UsersHandler(db *gorm.DB) users.Handler {
+	cfg := config.InitConfig()
+
+	hash := helpers.NewHash()
+	validate := helpers.NewValidationRequest()
+	jwt := helpers.NewJWT(*cfg)
 	repo := repository.New(db)
-	usecase := usecase.New(repo)
+	usecase := usecase.New(repo, hash, validate, jwt)
 	return handler.New(usecase)
 }
 
