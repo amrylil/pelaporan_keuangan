@@ -43,11 +43,6 @@ func (ctl *controller) GetStatusTransaksi(c *gin.Context) {
 		return
 	}
 
-	if statusTransaksis == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("There is No StatusTransaksis!"))
-		return
-	}
-
 	paginationData := helpers.PaginationResponse(page, pageSize, int(total))
 
 	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{
@@ -71,7 +66,15 @@ func (ctl *controller) GetStatusTransaksi(c *gin.Context) {
 // @Failure 500 {object} helpers.ResponseError "Internal server error"
 // @Router /status-transaksi/{id} [get]
 func (ctl *controller) StatusTransaksiDetails(c *gin.Context) {
-	statusTransaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	idStr := c.Param("id")
+
+	idInt, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID tidak valid"})
+		return
+	}
+
+	statusTransaksiID := uint(idInt)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
@@ -154,11 +157,15 @@ func (ctl *controller) CreateStatusTransaksi(c *gin.Context) {
 // @Router /status-transaksi/{id} [put]
 func (ctl *controller) UpdateStatusTransaksi(c *gin.Context) {
 	var input dtos.InputStatusTransaksi
-	statusTransaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	idStr := c.Param("id")
+
+	idInt, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID tidak valid"})
 		return
 	}
+
+	statusTransaksiID := uint(idInt)
 
 	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(statusTransaksiID)
 	if err != nil {
@@ -213,12 +220,15 @@ func (ctl *controller) UpdateStatusTransaksi(c *gin.Context) {
 // @Failure 500 {object} helpers.ResponseError "Internal server error"
 // @Router /status-transaksi/{id} [delete]
 func (ctl *controller) DeleteStatusTransaksi(c *gin.Context) {
-	statusTransaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	idStr := c.Param("id")
 
+	idInt, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID tidak valid"})
 		return
 	}
+
+	statusTransaksiID := uint(idInt)
 
 	statusTransaksi, err := ctl.service.FindStatusTransaksiByID(statusTransaksiID)
 

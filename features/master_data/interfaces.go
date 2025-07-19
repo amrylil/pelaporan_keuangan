@@ -21,9 +21,9 @@ type Repository interface {
 
 	GetAllStatusTransaksi(page, size int) ([]StatusTransaksi, int64, error)
 	InsertStatusTransaksi(newStatusTransaksi StatusTransaksi) error
-	SelectStatusTransaksiByID(statusTransaksiID uint64) (*StatusTransaksi, error)
+	SelectStatusTransaksiByID(statusTransaksiID uint) (*StatusTransaksi, error)
 	UpdateStatusTransaksi(statusTransaksi StatusTransaksi) error
-	DeleteStatusTransaksiByID(statusTransaksi uint64) error
+	DeleteStatusTransaksiByID(statusTransaksi uint) error
 }
 
 type Usecase interface {
@@ -40,10 +40,10 @@ type Usecase interface {
 	RemoveJenisPembayaran(JenisPembayaranID uint64) error
 
 	FindAllStatusTransaksi(page, size int) ([]dtos.ResStatusTransaksi, int64, error)
-	FindStatusTransaksiByID(statusTransaksiID uint64) (*dtos.ResStatusTransaksi, error)
+	FindStatusTransaksiByID(statusTransaksiID uint) (*dtos.ResStatusTransaksi, error)
 	CreateStatusTransaksi(newStatusTransaksi dtos.InputStatusTransaksi) error
-	ModifyStatusTransaksi(statusTransaksiData dtos.InputStatusTransaksi, StatusTransaksiID uint64) error
-	RemoveStatusTransaksi(statusTransaksiID uint64) error
+	ModifyStatusTransaksi(statusTransaksiData dtos.InputStatusTransaksi, StatusTransaksiID uint) error
+	RemoveStatusTransaksi(statusTransaksiID uint) error
 }
 
 type Handler interface {

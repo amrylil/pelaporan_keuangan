@@ -15,7 +15,7 @@ type ResTipeTransaksi struct {
 	Deskripsi string `json:"deskripsi,omitempty"`
 }
 type ResStatusTransaksi struct {
-	ID        uint64 `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	Deskripsi string `json:"deskripsi,omitempty"`
 }

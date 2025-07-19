@@ -18,11 +18,11 @@ type Transaksi struct {
 	Jumlah            float64 `gorm:"column:jumlah"`
 	Keterangan        string  `gorm:"column:keterangan;type:text"`
 	BuktiTransaksi    string  `gorm:"column:bukti_transaksi"`
-	IDStatusTransaksi uint    `gorm:"column:id_status_transaksi"`
+	IDStatusTransaksi uint64  `gorm:"column:id_status_transaksi"`
 	KomentarManajer   string  `gorm:"column:komentar_manajer;type:text"`
-	IDKategori        uint    `gorm:"column:id_kategori"`
-	IDUser            uint    `gorm:"column:id_user"`
-	IDJenisPembayaran uint    `gorm:"column:id_jenis_pembayaran"`
+	IDKategori        uint64  `gorm:"column:id_kategori"`
+	IDUser            uint64  `gorm:"column:id_user"`
+	IDJenisPembayaran uint64  `gorm:"column:id_jenis_pembayaran"`
 
 	TipeTransaksi   master_data.TipeTransaksi   `gorm:"foreignKey:IDTipeTransaksi"`
 	StatusTransaksi master_data.StatusTransaksi `gorm:"foreignKey:IDStatusTransaksi"`

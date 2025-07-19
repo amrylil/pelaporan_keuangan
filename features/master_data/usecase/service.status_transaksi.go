@@ -3,7 +3,6 @@ package usecase
 import (
 	"pelaporan_keuangan/features/master_data"
 	"pelaporan_keuangan/features/master_data/dtos"
-	"pelaporan_keuangan/helpers"
 
 	"github.com/labstack/gommon/log"
 	"github.com/mashingan/smapping"
@@ -32,7 +31,7 @@ func (svc *service) FindAllStatusTransaksi(page, size int) ([]dtos.ResStatusTran
 	return status_transaksis, total, nil
 }
 
-func (svc *service) FindStatusTransaksiByID(statusTransaksiID uint64) (*dtos.ResStatusTransaksi, error) {
+func (svc *service) FindStatusTransaksiByID(statusTransaksiID uint) (*dtos.ResStatusTransaksi, error) {
 	res := dtos.ResStatusTransaksi{}
 	status_transaksi, err := svc.model.SelectStatusTransaksiByID(statusTransaksiID)
 	if err != nil {
@@ -62,7 +61,6 @@ func (svc *service) CreateStatusTransaksi(newStatusTransaksi dtos.InputStatusTra
 		return nil
 	}
 
-	status_transaksi.ID = helpers.GenerateID()
 	err = svc.model.InsertStatusTransaksi(status_transaksi)
 
 	if err != nil {
@@ -73,7 +71,7 @@ func (svc *service) CreateStatusTransaksi(newStatusTransaksi dtos.InputStatusTra
 	return nil
 }
 
-func (svc *service) ModifyStatusTransaksi(statusTransaksi dtos.InputStatusTransaksi, statusTransaksiID uint64) error {
+func (svc *service) ModifyStatusTransaksi(statusTransaksi dtos.InputStatusTransaksi, statusTransaksiID uint) error {
 	newStatusTransaksi := master_data.StatusTransaksi{}
 
 	err := smapping.FillStruct(&newStatusTransaksi, smapping.MapFields(statusTransaksi))
@@ -93,7 +91,7 @@ func (svc *service) ModifyStatusTransaksi(statusTransaksi dtos.InputStatusTransa
 	return nil
 }
 
-func (svc *service) RemoveStatusTransaksi(statusTransaksiID uint64) error {
+func (svc *service) RemoveStatusTransaksi(statusTransaksiID uint) error {
 	err := svc.model.DeleteStatusTransaksiByID(statusTransaksiID)
 
 	if err != nil {

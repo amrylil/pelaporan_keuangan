@@ -1,14 +1,16 @@
 package dtos
 
 type InputTransaksi struct {
-	Tanggal           string  `json:"tanggal"            binding:"required,datetime=2006-01-02"` // yyyy-mm-dd
-	NamaTransaksi     string  `json:"nama_transaksi"     binding:"required,max=255"`
-	Jumlah            float64 `json:"jumlah"             binding:"required,gt=0"`
-	Keterangan        string  `json:"keterangan"         binding:"omitempty"`
-	BuktiTransaksi    string  `json:"bukti_transaksi"    binding:"omitempty,url"` // atau path lokal
-	IDTipeTransaksi   uint64  `json:"id_tipe_transaksi"  binding:"required"`
-	IDKategori        uint64  `json:"id_kategori"        binding:"required"`
-	IDJenisPembayaran uint64  `json:"id_jenis_pembayaran" binding:"required"`
+	Tanggal           string  `form:"tanggal"             validate:"required,datetime=2006-01-02"`
+	NamaTransaksi     string  `form:"nama_transaksi"      validate:"required,max=255"`
+	Jumlah            float64 `form:"jumlah"              validate:"required,gt=0"`
+	Keterangan        string  `form:"keterangan"`
+	IDTipeTransaksi   uint64  `form:"id_tipe_transaksi"   validate:"required"`
+	IDKategori        uint64  `form:"id_kategori"         validate:"required"`
+	IDJenisPembayaran uint64  `form:"id_jenis_pembayaran" validate:"required"`
+	IDUser            uint64  `validate:"required"`
+	IDStatusTransaksi uint64  `form:"id_status_transaksi" validate:"required"`
+	BuktiTransaksi    string
 }
 
 // UpdateTransaksiRequest - DTO untuk update transaksi

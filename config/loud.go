@@ -126,3 +126,34 @@ func LoadAwsConfig() *AWSConfig {
 
 	return res
 }
+
+type BucketConfig struct {
+	CLOUDINARY_CLOUD_NAME string
+	CLOUDINARY_API_KEY    string
+	CLOUDINARY_API_SECRET string
+}
+
+func LoadBucketConfig() *BucketConfig {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v", err)
+	} else {
+		log.Println(".env file loaded successfully")
+	}
+
+	var res = new(BucketConfig)
+
+	if val, found := os.LookupEnv("CLOUDINARY_CLOUD_NAME"); found {
+		res.CLOUDINARY_CLOUD_NAME = val
+	}
+
+	if val, found := os.LookupEnv("CLOUDINARY_API_KEY"); found {
+		res.CLOUDINARY_API_KEY = val
+	}
+
+	if val, found := os.LookupEnv("CLOUDINARY_API_SECRET"); found {
+		res.CLOUDINARY_API_SECRET = val
+	}
+
+	return res
+}

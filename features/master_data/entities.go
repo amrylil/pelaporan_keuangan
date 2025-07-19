@@ -27,7 +27,6 @@ type TipeTransaksi struct {
 type StatusTransaksi struct {
 	gorm.Model
 
-	ID        uint64  `gorm:"primaryKey"`
 	Name      string  `gorm:"type:varchar(255)"`
 	Deskripsi *string `gorm:"type:text"`
 }

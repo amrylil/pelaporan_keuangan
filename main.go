@@ -87,7 +87,7 @@ func main() {
 
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
-
+	r.MaxMultipartMemory = 8 << 20
 	r.Use(cors.New(config))
 	routes.Users(r, UsersHandler(db))
 	routes.Transaksi(r, TransaksiHandler(db))

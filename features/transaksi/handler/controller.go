@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"pelaporan_keuangan/features/transaksi"
 	"pelaporan_keuangan/features/transaksi/dtos"
@@ -21,7 +22,7 @@ func New(service transaksi.Usecase) transaksi.Handler {
 	}
 }
 
-var validate *validator.Validate
+var validate = validator.New()
 
 // GetTransaksi godoc
 // @Summary Get all transactions
@@ -33,18 +34,19 @@ var validate *validator.Validate
 // @Param size query int false "Page size" default(5)
 // @Success 200 {object} helpers.ResponseGetAllSuccess{data=[]dtos.ResTransaksi,pagination=helpers.Pagination} "Get all transactions success"
 // @Failure 400 {object} helpers.ResponseError "Bad request - Invalid pagination data"
-// @Failure 404 {object} helpers.ResponseError "No transactions found"
 // @Failure 500 {object} helpers.ResponseError "Internal server error"
 // @Router /transaksi [get]
 func (ctl *controller) GetTransaksi(c *gin.Context) {
 	var pagination dtos.Pagination
 	if err := c.ShouldBindQuery(&pagination); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Please provide valid pagination data!"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Mohon sediakan data paginasi yang valid!"))
 		return
 	}
 
-	if pagination.Page < 1 || pagination.Size < 1 {
+	if pagination.Page < 1 {
 		pagination.Page = 1
+	}
+	if pagination.Size < 1 {
 		pagination.Size = 5
 	}
 	page := pagination.Page
@@ -61,7 +63,7 @@ func (ctl *controller) GetTransaksi(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helpers.ResponseGetAllSuccess{
 		Status:     true,
-		Message:    "Get All Transaksis Success",
+		Message:    "Sukses Mendapatkan Semua Transaksi",
 		Data:       transaksis,
 		Pagination: paginationData,
 	})
@@ -83,7 +85,7 @@ func (ctl *controller) TransaksiDetails(c *gin.Context) {
 	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("ID transaksi tidak valid!"))
 		return
 	}
 
@@ -94,56 +96,103 @@ func (ctl *controller) TransaksiDetails(c *gin.Context) {
 	}
 
 	if transaksi == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaksi Not Found!"))
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaksi Tidak Ditemukan!"))
 		return
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseGetDetailSuccess{
 		Data:    transaksi,
 		Status:  true,
-		Message: " Get Transaksi Detail Success",
+		Message: "Sukses Mendapatkan Detail Transaksi",
 	})
 }
 
 // CreateTransaksi godoc
-// @Summary Create new transaction
-// @Description Create a new financial transaction
+// @Summary Create new transaction with optional proof
+// @Description Create a new financial transaction. The request should be multipart/form-data.
 // @Tags Transaksi
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
-// @Param request body dtos.InputTransaksi true "Transaction data"
-// @Success 200 {object} helpers.ResponseCUDSuccess "Create transaction success"
+// @Param judul formData string true "Judul Transaksi"
+// @Param deskripsi formData string false "Deskripsi Transaksi"
+// @Param jumlah formData number true "Jumlah Transaksi"
+// @Param tipe formData string true "Tipe Transaksi ('pemasukan' atau 'pengeluaran')"
+// @Param bukti_transaksi formData file false "Bukti Transaksi (Gambar/PDF)"
+// @Success 201 {object} helpers.ResponseCUDSuccess "Create transaction success"
 // @Failure 400 {object} helpers.ResponseError "Bad request - Invalid input data or validation error"
 // @Failure 500 {object} helpers.ResponseError "Internal server error"
 // @Router /transaksi [post]
 func (ctl *controller) CreateTransaksi(c *gin.Context) {
 	var input dtos.InputTransaksi
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request!"))
+	if err := c.ShouldBind(&input); err != nil {
+		log.Printf("Error binding form data: %v", err)
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Data formulir tidak valid!"))
 		return
 	}
 
-	validate = validator.New()
+	userIDFromToken, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, helpers.BuildErrorResponse("Sesi pengguna tidak valid atau tidak ditemukan."))
+		return
+	}
 
-	err := validate.Struct(input)
+	var idUserUint64 uint64
+	switch v := userIDFromToken.(type) {
+	case float64:
+		idUserUint64 = uint64(v)
+	case string:
+		parsedID, err := strconv.ParseUint(v, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse("Format userID di token tidak valid."))
+			return
+		}
+		idUserUint64 = parsedID
+	case uint:
+		idUserUint64 = uint64(v)
+	case uint64:
+		idUserUint64 = v
+	default:
+		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse("Tipe userID di context tidak dikenal."))
+		return
+	}
 
+	input.IDUser = idUserUint64
+
+	file, err := c.FormFile("bukti_transaksi")
+	if err == nil {
+		uploadResult, uploadErr := helpers.UploadFile(file, "transaksi")
+		if uploadErr != nil {
+			log.Printf("Cloudinary upload error: %v", uploadErr)
+			c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse("Gagal mengunggah file bukti."))
+			return
+		}
+		input.BuktiTransaksi = uploadResult.SecureURL
+	} else if err != http.ErrMissingFile {
+		log.Printf("Error getting form file: %v", err)
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Error saat memproses file."))
+		return
+	}
+
+	err = validate.Struct(input)
 	if err != nil {
 		errMap := helpers.ErrorMapValidation(err)
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Bad Request!", gin.H{
-			"error": errMap,
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Data tidak valid!", gin.H{
+			"errors": errMap,
 		}))
 		return
 	}
 
+	// 6. Panggil service untuk membuat transaksi
 	err = ctl.service.Create(input)
 	if err != nil {
+		log.Printf("Service create error: %v", err)
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Create Transaksi Success",
+	c.JSON(http.StatusCreated, helpers.ResponseCUDSuccess{
+		Message: "Sukses Membuat Transaksi",
 		Status:  true,
 	})
 }
@@ -164,42 +213,41 @@ func (ctl *controller) CreateTransaksi(c *gin.Context) {
 func (ctl *controller) UpdateTransaksi(c *gin.Context) {
 	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid transaction ID"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("ID transaksi tidak valid"))
 		return
 	}
 
-	// Check if transaction exists
+	// Cek apakah transaksi ada
 	existingTransaksi, err := ctl.service.FindByID(transaksiID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 	if existingTransaksi == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaction not found"))
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaksi tidak ditemukan"))
 		return
 	}
 
-	// Use UpdateTransaksiRequest for partial updates
+	// Gunakan UpdateTransaksiRequest untuk pembaruan parsial
 	var input dtos.UpdateTransaksiRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request data"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Data permintaan tidak valid"))
 		return
 	}
 
-	// Set the ID for update
+	// Set ID untuk pembaruan
 	id := transaksiID
 	input.ID = &id
 
-	// Validate the input
+	// Validasi input
 	if err := validate.Struct(input); err != nil {
 		errMap := helpers.ErrorMapValidation(err)
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Validation failed", gin.H{
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Validasi gagal", gin.H{
 			"errors": errMap,
 		}))
 		return
 	}
 
-	// Call service with proper update DTO
 	err = ctl.service.ModifyPartial(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
@@ -207,7 +255,7 @@ func (ctl *controller) UpdateTransaksi(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: "Update Transaction Success",
+		Message: "Sukses Memperbarui Transaksi",
 		Status:  true,
 	})
 }
@@ -228,31 +276,31 @@ func (ctl *controller) DeleteTransaksi(c *gin.Context) {
 	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse(err.Error()))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("ID transaksi tidak valid!"))
 		return
 	}
 
+	// Cek apakah transaksi ada sebelum menghapus
 	transaksi, err := ctl.service.FindByID(transaksiID)
-
 	if err != nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse(err.Error()))
+		// Sebaiknya tidak menampilkan error internal ke user
+		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse("Terjadi kesalahan saat mencari transaksi"))
 		return
 	}
 
 	if transaksi == nil {
-		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaksi Not Found!"))
+		c.JSON(http.StatusNotFound, helpers.BuildErrorResponse("Transaksi Tidak Ditemukan!"))
 		return
 	}
 
 	err = ctl.service.Remove(transaksiID)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, helpers.BuildErrorResponse(err.Error()))
 		return
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: " Delete Transaksi Success",
+		Message: "Sukses Menghapus Transaksi",
 		Status:  true,
 	})
 }
@@ -272,21 +320,21 @@ func (ctl *controller) DeleteTransaksi(c *gin.Context) {
 func (ctl *controller) UpdateTransaksiStatus(c *gin.Context) {
 	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid transaction ID"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("ID transaksi tidak valid"))
 		return
 	}
 
 	var input struct {
-		StatusID uint64 `json:"status_id" validate:"required"`
+		StatusID uint `json:"status_id" validate:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Invalid request data"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Data permintaan tidak valid"))
 		return
 	}
 
 	if err := validate.Struct(input); err != nil {
-		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Status ID is required"))
+		c.JSON(http.StatusBadRequest, helpers.BuildErrorResponse("Status ID wajib diisi"))
 		return
 	}
 
@@ -297,7 +345,7 @@ func (ctl *controller) UpdateTransaksiStatus(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, helpers.ResponseCUDSuccess{
-		Message: "Update Transaction Status Success",
+		Message: "Sukses Memperbarui Status Transaksi",
 		Status:  true,
 	})
 }

@@ -25,7 +25,6 @@ func JWTAuth(jwtManager *jwt.Manager) gin.HandlerFunc {
 			return
 		}
 
-		// Set claims data to context for use in handlers
 		c.Set("user_id", claims.UserID)
 		c.Set("email", claims.Email)
 		c.Set("roles", claims.Roles)
